@@ -2,6 +2,8 @@ package com.yugabyte.app.messenger.data.service;
 
 import com.yugabyte.app.messenger.data.entity.GeoId;
 import com.yugabyte.app.messenger.data.entity.Profile;
+import com.yugabyte.app.messenger.data.repository.ProfileRepository;
+
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

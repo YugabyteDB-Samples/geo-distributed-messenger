@@ -1,7 +1,7 @@
 package com.yugabyte.app.messenger.security;
 
 import com.yugabyte.app.messenger.data.entity.Profile;
-import com.yugabyte.app.messenger.data.service.ProfileRepository;
+import com.yugabyte.app.messenger.data.repository.ProfileRepository;
 
 import java.util.Collections;
 import java.util.List;

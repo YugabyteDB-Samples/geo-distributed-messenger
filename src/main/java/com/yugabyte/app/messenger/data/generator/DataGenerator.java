@@ -2,7 +2,8 @@ package com.yugabyte.app.messenger.data.generator;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.yugabyte.app.messenger.data.entity.Profile;
-import com.yugabyte.app.messenger.data.service.ProfileRepository;
+import com.yugabyte.app.messenger.data.repository.ProfileRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

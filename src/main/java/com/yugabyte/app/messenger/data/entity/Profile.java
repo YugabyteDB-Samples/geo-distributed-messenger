@@ -1,14 +1,22 @@
 package com.yugabyte.app.messenger.data.entity;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -18,7 +26,7 @@ public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "profile_id_seq")
     @SequenceGenerator(name = "profile_id_seq", sequenceName = "profile_id_seq", allocationSize = 1)
-    private int id;
+    private Integer id;
 
     @Id
     @Column(name = "country_code")
@@ -42,11 +50,19 @@ public class Profile {
     @Column(name = "user_picture_url")
     private String userPictureUrl;
 
-    public int getId() {
+    @ManyToMany
+    @JoinTable(name = "WorkspaceProfile", joinColumns = {
+            @JoinColumn(name = "profile_id", referencedColumnName = "id"),
+            @JoinColumn(name = "workspace_country", referencedColumnName = "country_code") })
+    @Column(updatable = false, insertable = false)
+    @LazyCollection(LazyCollectionOption.TRUE)
+    private Set<Workspace> workspaces;
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -3,7 +3,8 @@ package com.yugabyte.app.messenger.security;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinServletRequest;
 import com.yugabyte.app.messenger.data.entity.Profile;
-import com.yugabyte.app.messenger.data.service.ProfileRepository;
+import com.yugabyte.app.messenger.data.repository.ProfileRepository;
+
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
