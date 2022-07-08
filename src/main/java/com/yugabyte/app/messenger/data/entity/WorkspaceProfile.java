@@ -4,8 +4,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "WorkspaceProfile")
 @IdClass(WorkspaceProfileKey.class)
 public class WorkspaceProfile {
     @Id

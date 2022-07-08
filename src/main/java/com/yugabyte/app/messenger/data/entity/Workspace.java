@@ -8,11 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
-import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
-
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import com.helger.commons.annotation.Nonempty;
 
@@ -53,13 +49,5 @@ public class Workspace {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Set<Profile> getProfiles() {
-        return profiles;
-    }
-
-    public void setProfiles(Set<Profile> profiles) {
-        this.profiles = profiles;
     }
 }
