@@ -4,22 +4,17 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
-import javax.persistence.Table;
 
 @Entity
-@Table(name = "WorkspaceProfile")
 @IdClass(WorkspaceProfileKey.class)
 public class WorkspaceProfile {
     @Id
-    @Column(name = "profile_id")
     private Integer profileId;
 
     @Id
-    @Column(name = "workspace_id")
     private Integer workspaceId;
 
     @Id
-    @Column(name = "workspace_country")
     private String workspaceCountry;
 
     public Integer getProfileId() {

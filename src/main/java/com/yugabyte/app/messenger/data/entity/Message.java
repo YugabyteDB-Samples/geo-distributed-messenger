@@ -2,7 +2,6 @@ package com.yugabyte.app.messenger.data.entity;
 
 import java.sql.Timestamp;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,19 +19,15 @@ public class Message {
     private Integer id;
 
     @Id
-    @Column(name = "country_code")
     private String countryCode;
 
-    @Column(name = "channel_id")
     private Integer channelId;
 
-    @Column(name = "sender_id")
     private Integer senderId;
 
     @NotEmpty
     private String message;
 
-    @Column(name = "sent_at")
     private Timestamp sentAt;
 
     public Integer getId() {

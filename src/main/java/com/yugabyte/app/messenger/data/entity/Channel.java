@@ -1,6 +1,5 @@
 package com.yugabyte.app.messenger.data.entity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,14 +18,12 @@ public class Channel {
     private Integer id;
 
     @Id
-    @Column(name = "country_code")
     private String countryCode;
 
     @NotEmpty
     private String name;
 
     @NotNull
-    @Column(name = "workspace_id")
     private Integer workspaceId;
 
     public Integer getId() {

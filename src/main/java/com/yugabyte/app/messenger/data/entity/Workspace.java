@@ -1,8 +1,5 @@
 package com.yugabyte.app.messenger.data.entity;
 
-import java.util.Set;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,7 +18,6 @@ public class Workspace {
     private Integer id;
 
     @Id
-    @Column(name = "country_code")
     private String countryCode;
 
     @Nonempty

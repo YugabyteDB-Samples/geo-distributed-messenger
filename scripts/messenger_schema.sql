@@ -14,7 +14,8 @@ CREATE TABLE Profile (
     country_code varchar(3),
     hashed_password text NOT NULL,
     user_picture_url text,
-    PRIMARY KEY(id, country_code)
+    PRIMARY KEY(id, country_code),
+    UNIQUE(id)
 );
 
 CREATE SEQUENCE workspace_id_seq CACHE 100;
@@ -26,11 +27,13 @@ CREATE TABLE Workspace(
     PRIMARY KEY(id, country_code)
 );
 
-CREATE TABLE WorkspaceProfile(
+CREATE TABLE Workspace_Profile(
     workspace_id integer,
     profile_id integer,
     workspace_country varchar(3),
-    PRIMARY KEY(workspace_id, profile_id, workspace_country)
+    PRIMARY KEY(workspace_id, profile_id, workspace_country),
+    FOREIGN KEY(workspace_id, workspace_country) REFERENCES Workspace(id, country_code),
+    FOREIGN KEY(profile_id) REFERENCES Profile(id)
 );
 
 CREATE SEQUENCE channel_id_seq CACHE 100;
@@ -40,7 +43,8 @@ CREATE TABLE Channel(
     name text NOT NULL,
     workspace_id integer NOT NULL,
     country_code text NOT NULL,
-    PRIMARY KEY(id, country_code)
+    PRIMARY KEY(id, country_code),
+    FOREIGN KEY(workspace_id, country_code) REFERENCES Workspace(id, country_code)
 );
 
 CREATE SEQUENCE message_id_seq CACHE 100;
@@ -52,5 +56,7 @@ CREATE TABLE Message(
     message text NOT NULL,
     sent_at TIMESTAMP(0) DEFAULT NOW(),
     country_code text NOT NULL,
-    PRIMARY KEY(id, country_code)
+    PRIMARY KEY(id, country_code),
+    FOREIGN KEY(channel_id, country_code) REFERENCES Channel(id, country_code),
+    FOREIGN KEY(sender_id) REFERENCES Profile(id)
 );

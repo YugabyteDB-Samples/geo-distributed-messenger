@@ -29,11 +29,9 @@ public class Profile {
     private Integer id;
 
     @Id
-    @Column(name = "country_code")
     private String countryCode;
 
     @NotEmpty
-    @Column(name = "full_name")
     private String fullName;
 
     @Email
@@ -44,16 +42,14 @@ public class Profile {
     private String phone;
 
     @JsonIgnore
-    @Column(name = "hashed_password")
     private String hashedPassword;
 
-    @Column(name = "user_picture_url")
     private String userPictureUrl;
 
     @ManyToMany
     @JoinTable(name = "WorkspaceProfile", joinColumns = {
-            @JoinColumn(name = "profile_id", referencedColumnName = "id"),
-            @JoinColumn(name = "workspace_country", referencedColumnName = "country_code") })
+            @JoinColumn(name = "profileId", referencedColumnName = "id"),
+            @JoinColumn(name = "workspaceCountry", referencedColumnName = "countryCode") })
     @Column(updatable = false, insertable = false)
     @LazyCollection(LazyCollectionOption.TRUE)
     private Set<Workspace> workspaces;
