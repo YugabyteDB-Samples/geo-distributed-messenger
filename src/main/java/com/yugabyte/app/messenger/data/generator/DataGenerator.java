@@ -125,10 +125,10 @@ public class DataGenerator {
             List<WorkspaceProfile> workspaceProfiles = wpGenerator.create(profilesWithIds.size() * 2, seed)
                     .stream().map(
                             workProfile -> {
-                                workProfile.setProfileId(
-                                        profilesWithIds.get(rand.nextInt(
-                                                profilesWithIds.size()))
-                                                .getId());
+                                Profile profile = profilesWithIds.get(rand.nextInt(profilesWithIds.size()));
+
+                                workProfile.setProfileId(profile.getId());
+                                workProfile.setProfileCountry(profile.getCountryCode());
 
                                 Workspace workspace = workspacesWithIds.get(
                                         rand.nextInt(workspacesWithIds.size()));
@@ -148,7 +148,8 @@ public class DataGenerator {
             logger.info("Generating Messages");
 
             for (Workspace workspace : workspacesWithIds) {
-                List<Channel> workspaceChannels = channelRepository.findByWorkspaceId(workspace.getId());
+                List<Channel> workspaceChannels = channelRepository
+                        .findByWorkspaceId(workspace.getId());
                 List<WorkspaceProfile> workspaceWP = workspaceProfileRepository
                         .findByWorkspaceId(workspace.getId());
 
@@ -156,11 +157,17 @@ public class DataGenerator {
                         LocalDateTime.now());
                 mGenerator.setData(Message::setMessage, DataType.SENTENCE);
 
-                List<Message> messages = mGenerator.create(1000, seed).stream().map(
+                List<Message> messages = mGenerator.create(100, seed).stream().map(
                         message -> {
                             message.setCountryCode(workspace.getCountryCode());
-                            message.setChannelId(workspaceChannels.get(rand.nextInt(workspaceChannels.size())).getId());
-                            message.setSenderId(workspaceWP.get(rand.nextInt(workspaceWP.size())).getProfileId());
+                            message.setChannelId(workspaceChannels
+                                    .get(rand.nextInt(workspaceChannels.size()))
+                                    .getId());
+                            WorkspaceProfile wProfile = workspaceWP
+                                    .get(rand.nextInt(workspaceWP.size()));
+
+                            message.setSenderId(wProfile.getProfileId());
+                            message.setSenderCountryCode(wProfile.getProfileCountry());
 
                             return message;
                         }).collect(Collectors.toList());

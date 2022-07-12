@@ -31,6 +31,7 @@ CREATE TABLE Workspace_Profile(
     workspace_id integer,
     profile_id integer,
     workspace_country varchar(3),
+    profile_country varchar(3) NOT NULL,
     PRIMARY KEY(workspace_id, profile_id, workspace_country),
     FOREIGN KEY(workspace_id, workspace_country) REFERENCES Workspace(id, country_code),
     FOREIGN KEY(profile_id) REFERENCES Profile(id)
@@ -54,8 +55,9 @@ CREATE TABLE Message(
     channel_id integer,
     sender_id integer NOT NULL,
     message text NOT NULL,
-    sent_at TIMESTAMP(0) DEFAULT NOW(),
-    country_code text NOT NULL,
+    sent_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    country_code varchar(3) NOT NULL,
+    sender_country_code varchar(3) NOT NULL,
     PRIMARY KEY(id, country_code),
     FOREIGN KEY(channel_id, country_code) REFERENCES Channel(id, country_code),
     FOREIGN KEY(sender_id) REFERENCES Profile(id)

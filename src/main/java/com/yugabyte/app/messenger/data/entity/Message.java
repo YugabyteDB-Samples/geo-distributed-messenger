@@ -10,6 +10,8 @@ import javax.persistence.IdClass;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotEmpty;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 @Entity
 @IdClass(GeoId.class)
 public class Message {
@@ -25,9 +27,12 @@ public class Message {
 
     private Integer senderId;
 
+    private String senderCountryCode;
+
     @NotEmpty
     private String message;
 
+    @CreationTimestamp
     private Timestamp sentAt;
 
     public Integer getId() {
@@ -76,5 +81,13 @@ public class Message {
 
     public void setSentAt(Timestamp sentAt) {
         this.sentAt = sentAt;
+    }
+
+    public String getSenderCountryCode() {
+        return senderCountryCode;
+    }
+
+    public void setSenderCountryCode(String senderCountryCode) {
+        this.senderCountryCode = senderCountryCode;
     }
 }

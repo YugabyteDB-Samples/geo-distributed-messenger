@@ -13,13 +13,13 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.server.auth.AccessAnnotationChecker;
-import com.yugabyte.app.messenger.components.appnav.AppNav;
-import com.yugabyte.app.messenger.components.appnav.AppNavItem;
+import com.yugabyte.app.messenger.data.entity.Channel;
 import com.yugabyte.app.messenger.data.entity.Profile;
+import com.yugabyte.app.messenger.data.entity.Workspace;
+import com.yugabyte.app.messenger.data.service.MessengingService;
 import com.yugabyte.app.messenger.security.AuthenticatedUser;
-import com.yugabyte.app.messenger.views.about.AboutView;
-import com.yugabyte.app.messenger.views.helloworld.HelloWorldView;
+
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -30,13 +30,15 @@ public class MainLayout extends AppLayout {
     private H1 viewTitle;
 
     private AuthenticatedUser authenticatedUser;
-    private AccessAnnotationChecker accessChecker;
 
-    public MainLayout(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker) {
+    private MessengingService messengingService;
+
+    public MainLayout(AuthenticatedUser authenticatedUser, MessengingService messengingService) {
         this.authenticatedUser = authenticatedUser;
-        this.accessChecker = accessChecker;
+        this.messengingService = messengingService;
 
         setPrimarySection(Section.DRAWER);
+
         addToNavbar(true, createHeaderContent());
         addToDrawer(createDrawerContent());
     }
@@ -56,29 +58,37 @@ public class MainLayout extends AppLayout {
     }
 
     private Component createDrawerContent() {
-        H2 appName = new H2("geo-distributed-messenger");
-        appName.addClassNames("app-name");
+        Optional<Profile> maybeUser = authenticatedUser.get();
+        H2 appName;
+        com.vaadin.flow.component.html.Section section;
 
-        com.vaadin.flow.component.html.Section section = new com.vaadin.flow.component.html.Section(appName,
-                createNavigation(), createFooter());
+        if (maybeUser.isPresent()) {
+            Profile user = maybeUser.get();
+
+            List<Workspace> workspaces = messengingService.getUserWorkspaces(user);
+
+            appName = new H2(workspaces.get(0).getName());
+
+            section = new com.vaadin.flow.component.html.Section(appName,
+                    createChannelsList(user, workspaces), createFooter());
+        } else {
+            appName = new H2("Login Required");
+            section = new com.vaadin.flow.component.html.Section(appName, createFooter());
+        }
+
+        appName.addClassNames("app-name");
         section.addClassNames("drawer-section");
+
         return section;
     }
 
-    private AppNav createNavigation() {
-        AppNav nav = new AppNav();
-        nav.addClassNames("app-nav");
+    private Component createChannelsList(Profile user, List<Workspace> workspaces) {
+        List<Channel> channels = messengingService.getWorkspaceChannels(workspaces.get(0));
 
-        if (accessChecker.hasAccess(HelloWorldView.class)) {
-            nav.addItem(new AppNavItem("Hello World", HelloWorldView.class, "la la-globe"));
+        ChannelsView channelsView = new ChannelsView(channels);
+        channelsView.addClassName("channels-list");
 
-        }
-        if (accessChecker.hasAccess(AboutView.class)) {
-            nav.addItem(new AppNavItem("About", AboutView.class, "la la-file"));
-
-        }
-
-        return nav;
+        return channelsView;
     }
 
     private Footer createFooter() {

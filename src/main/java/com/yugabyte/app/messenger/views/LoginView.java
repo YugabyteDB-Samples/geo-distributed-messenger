@@ -1,4 +1,4 @@
-package com.yugabyte.app.messenger.views.login;
+package com.yugabyte.app.messenger.views;
 
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.login.LoginOverlay;

@@ -1,6 +1,5 @@
 package com.yugabyte.app.messenger.data.entity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -16,6 +15,16 @@ public class WorkspaceProfile {
 
     @Id
     private String workspaceCountry;
+
+    private String profileCountry;
+
+    public String getProfileCountry() {
+        return profileCountry;
+    }
+
+    public void setProfileCountry(String profileCountry) {
+        this.profileCountry = profileCountry;
+    }
 
     public Integer getProfileId() {
         return profileId;

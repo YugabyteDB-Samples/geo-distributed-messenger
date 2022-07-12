@@ -4,6 +4,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -46,13 +47,14 @@ public class Profile {
 
     private String userPictureUrl;
 
-    @ManyToMany
-    @JoinTable(name = "WorkspaceProfile", joinColumns = {
-            @JoinColumn(name = "profileId", referencedColumnName = "id"),
-            @JoinColumn(name = "workspaceCountry", referencedColumnName = "countryCode") })
-    @Column(updatable = false, insertable = false)
-    @LazyCollection(LazyCollectionOption.TRUE)
-    private Set<Workspace> workspaces;
+    // @ManyToMany
+    // @JoinTable(name = "WorkspaceProfile", joinColumns = {
+    // @JoinColumn(name = "profileId", referencedColumnName = "id"),
+    // @JoinColumn(name = "workspaceCountry", referencedColumnName = "countryCode")
+    // })
+    // @Column(updatable = false, insertable = false)
+    // // @LazyCollection(LazyCollectionOption.TRUE)
+    // private Set<Workspace> workspaces;
 
     public Integer getId() {
         return id;
@@ -109,6 +111,10 @@ public class Profile {
     public void setUserPictureUrl(String userPictureUrl) {
         this.userPictureUrl = userPictureUrl;
     }
+
+    // public Set<Workspace> getWorkspaces() {
+    // return workspaces;
+    // }
 
     @Override
     public String toString() {
