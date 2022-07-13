@@ -16,7 +16,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.yugabyte.app.messenger.data.entity.Channel;
 import com.yugabyte.app.messenger.data.entity.Profile;
 import com.yugabyte.app.messenger.data.entity.Workspace;
-import com.yugabyte.app.messenger.data.service.MessengingService;
+import com.yugabyte.app.messenger.data.service.MessagingService;
 import com.yugabyte.app.messenger.security.AuthenticatedUser;
 
 import java.util.List;
@@ -31,9 +31,9 @@ public class MainLayout extends AppLayout {
 
     private AuthenticatedUser authenticatedUser;
 
-    private MessengingService messengingService;
+    private MessagingService messengingService;
 
-    public MainLayout(AuthenticatedUser authenticatedUser, MessengingService messengingService) {
+    public MainLayout(AuthenticatedUser authenticatedUser, MessagingService messengingService) {
         this.authenticatedUser = authenticatedUser;
         this.messengingService = messengingService;
 
@@ -83,9 +83,7 @@ public class MainLayout extends AppLayout {
     }
 
     private Component createChannelsList(Profile user, List<Workspace> workspaces) {
-        List<Channel> channels = messengingService.getWorkspaceChannels(workspaces.get(0));
-
-        ChannelsView channelsView = new ChannelsView(channels);
+        WorkspaceView channelsView = new WorkspaceView(workspaces, messengingService);
         channelsView.addClassName("channels-list");
 
         return channelsView;

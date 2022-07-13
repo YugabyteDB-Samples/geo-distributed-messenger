@@ -2,13 +2,13 @@ package com.yugabyte.app.messenger.event;
 
 import com.vaadin.flow.component.ComponentEvent;
 import com.yugabyte.app.messenger.data.entity.Channel;
-import com.yugabyte.app.messenger.views.ChannelsView;
+import com.yugabyte.app.messenger.views.WorkspaceView;
 
-public class ChannelChangeEvent extends ComponentEvent<ChannelsView> {
+public class ChannelChangeEvent extends ComponentEvent<WorkspaceView> {
 
     private Channel selectedChannel;
 
-    public ChannelChangeEvent(ChannelsView source, boolean fromClient, Channel selectedChanel) {
+    public ChannelChangeEvent(WorkspaceView source, boolean fromClient, Channel selectedChanel) {
         super(source, fromClient);
         this.selectedChannel = selectedChanel;
     }

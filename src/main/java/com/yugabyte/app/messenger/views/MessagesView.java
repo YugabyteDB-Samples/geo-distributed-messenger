@@ -18,7 +18,7 @@ import com.yugabyte.app.messenger.data.entity.Channel;
 import com.yugabyte.app.messenger.data.entity.GeoId;
 import com.yugabyte.app.messenger.data.entity.Message;
 import com.yugabyte.app.messenger.data.entity.Profile;
-import com.yugabyte.app.messenger.data.service.MessengingService;
+import com.yugabyte.app.messenger.data.service.MessagingService;
 import com.yugabyte.app.messenger.data.service.ProfileService;
 import com.yugabyte.app.messenger.event.ChannelChangeEvent;
 
@@ -43,7 +43,7 @@ public class MessagesView extends HorizontalLayout {
     private Registration registration;
 
     @Autowired
-    MessengingService messagingService;
+    MessagingService messagingService;
 
     @Autowired
     ProfileService profileService;

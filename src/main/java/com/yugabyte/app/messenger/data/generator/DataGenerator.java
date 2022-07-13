@@ -122,10 +122,11 @@ public class DataGenerator {
                     WorkspaceProfile.class,
                     LocalDateTime.now());
 
-            List<WorkspaceProfile> workspaceProfiles = wpGenerator.create(profilesWithIds.size() * 2, seed)
+            List<WorkspaceProfile> workspaceProfiles = wpGenerator.create(1000, seed)
                     .stream().map(
                             workProfile -> {
-                                Profile profile = profilesWithIds.get(rand.nextInt(profilesWithIds.size()));
+                                Profile profile = profilesWithIds.get(
+                                        rand.nextInt(profilesWithIds.size()));
 
                                 workProfile.setProfileId(profile.getId());
                                 workProfile.setProfileCountry(profile.getCountryCode());

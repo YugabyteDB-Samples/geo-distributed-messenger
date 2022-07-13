@@ -2,7 +2,6 @@ package com.yugabyte.app.messenger.data.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,12 +14,11 @@ import com.yugabyte.app.messenger.data.entity.Workspace;
 import com.yugabyte.app.messenger.data.entity.WorkspaceProfile;
 import com.yugabyte.app.messenger.data.repository.ChannelRepository;
 import com.yugabyte.app.messenger.data.repository.MessageRepository;
-import com.yugabyte.app.messenger.data.repository.ProfileRepository;
 import com.yugabyte.app.messenger.data.repository.WorkspaceProfileRepository;
 import com.yugabyte.app.messenger.data.repository.WorkspaceRepository;
 
 @Service
-public class MessengingService {
+public class MessagingService {
     @Autowired
     private ChannelRepository channelsRepository;
 
