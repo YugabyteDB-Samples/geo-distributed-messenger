@@ -90,4 +90,11 @@ public class Message {
     public void setSenderCountryCode(String senderCountryCode) {
         this.senderCountryCode = senderCountryCode;
     }
+
+    @Override
+    public String toString() {
+        return "Message [channelId=" + channelId + ", countryCode=" + countryCode + ", id=" + id + ", message="
+                + message + ", senderCountryCode=" + senderCountryCode + ", senderId=" + senderId + ", sentAt=" + sentAt
+                + "]";
+    }
 }

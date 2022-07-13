@@ -5,11 +5,16 @@ import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Section;
 import com.vaadin.flow.component.messages.MessageList;
 import com.vaadin.flow.component.messages.MessageListItem;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
@@ -21,6 +26,7 @@ import com.yugabyte.app.messenger.data.entity.Profile;
 import com.yugabyte.app.messenger.data.service.MessagingService;
 import com.yugabyte.app.messenger.data.service.ProfileService;
 import com.yugabyte.app.messenger.event.ChannelChangeEvent;
+import com.yugabyte.app.messenger.security.AuthenticatedUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +40,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Route(value = "messages", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 @PermitAll
-public class MessagesView extends HorizontalLayout {
+public class MessagesView extends Section {
+
+    private Channel currentChannel;
+    private List<MessageListItem> currentMessages;
 
     private MessageList messageList;
-    private TextField newMessageField;
-    private Button sayHello;
+    private TextArea newMessageArea;
+    private Button sendMessageButton;
 
     private Registration registration;
 
@@ -48,42 +57,98 @@ public class MessagesView extends HorizontalLayout {
     @Autowired
     ProfileService profileService;
 
+    @Autowired
+    private AuthenticatedUser authenticatedUser;
+
     public MessagesView() {
-        messageList = new MessageList();
+        HorizontalLayout newMessageLayout = createSendNewMessageSection();
 
-        newMessageField = new TextField("Your name");
-        sayHello = new Button("Say hello");
-        sayHello.addClickListener(e -> {
-            Notification.show("Hello " + newMessageField.getValue());
+        createMessagesListSection();
+
+        addClassName("app-message-view");
+        add(messageList, newMessageLayout);
+    }
+
+    private HorizontalLayout createSendNewMessageSection() {
+        HorizontalLayout newMessageLayout = new HorizontalLayout();
+
+        newMessageArea = new TextArea();
+        newMessageArea.setWidthFull();
+        newMessageArea.setValueChangeMode(ValueChangeMode.EAGER);
+
+        sendMessageButton = new Button("Send");
+        sendMessageButton.addClickListener(e -> {
+            Optional<Profile> userOptional = authenticatedUser.get();
+
+            if (userOptional.isPresent()) {
+                Profile user = userOptional.get();
+
+                Message newMessage = new Message();
+
+                newMessage.setChannelId(currentChannel.getId());
+                newMessage.setCountryCode(currentChannel.getCountryCode());
+                newMessage.setSenderId(user.getId());
+                newMessage.setSenderCountryCode(user.getCountryCode());
+
+                newMessage.setMessage(newMessageArea.getValue().trim());
+
+                newMessage = messagingService.addMessage(newMessage);
+
+                if (newMessage != null) {
+                    MessageListItem newMessageListItem = createMessageListItem(newMessage);
+                    currentMessages.add(newMessageListItem);
+
+                    messageList.setItems(currentMessages);
+                    newMessageArea.setValue("");
+                } else {
+                    Notification.show("Failed to send the message");
+                }
+            } else {
+                Notification.show("Log in before sending messages!");
+            }
         });
-        sayHello.addClickShortcut(Key.ENTER);
+        sendMessageButton.addClickShortcut(Key.ENTER);
 
-        setMargin(true);
-        setVerticalComponentAlignment(Alignment.END, messageList, newMessageField, sayHello);
+        newMessageLayout.addClassName("app-message-view-new-message-area");
+        newMessageLayout.setPadding(true);
+        newMessageLayout.add(newMessageArea, sendMessageButton);
+        return newMessageLayout;
+    }
 
-        add(messageList, newMessageField, sayHello);
+    private void createMessagesListSection() {
+        messageList = new MessageList();
+        messageList.addClassName("app-message-view-list");
     }
 
     public void changeChannel(Channel newChannel) {
+        currentChannel = newChannel;
+
         List<Message> messages = messagingService.getMessages(newChannel);
         List<MessageListItem> messageListItems = new ArrayList<>(messages.size());
 
         for (Message message : messages) {
 
-            GeoId geoId = new GeoId();
-            geoId.setCountryCode(message.getSenderCountryCode());
-            geoId.setId(message.getSenderId());
-
-            Optional<Profile> userProfile = profileService.get(geoId);
-
-            MessageListItem mItem = new MessageListItem(message.getMessage(),
-                    message.getSentAt().toInstant(),
-                    userProfile.isPresent() ? userProfile.get().getFullName() : "Uknown");
+            MessageListItem mItem = createMessageListItem(message);
 
             messageListItems.add(mItem);
         }
 
+        currentMessages = messageListItems;
         messageList.setItems(messageListItems);
+    }
+
+    private MessageListItem createMessageListItem(Message message) {
+        GeoId geoId = new GeoId();
+        geoId.setCountryCode(message.getSenderCountryCode());
+        geoId.setId(message.getSenderId());
+
+        Optional<Profile> userProfile = profileService.get(geoId);
+
+        MessageListItem mItem = new MessageListItem(message.getMessage(),
+                message.getSentAt().toInstant(),
+                userProfile.isPresent() ? userProfile.get().getFullName() : "Unknown");
+
+        return mItem;
     }
 
     @Override

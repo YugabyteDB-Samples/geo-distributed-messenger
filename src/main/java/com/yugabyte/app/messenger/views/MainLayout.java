@@ -59,7 +59,6 @@ public class MainLayout extends AppLayout {
 
     private Component createDrawerContent() {
         Optional<Profile> maybeUser = authenticatedUser.get();
-        H2 appName;
         com.vaadin.flow.component.html.Section section;
 
         if (maybeUser.isPresent()) {
@@ -67,16 +66,15 @@ public class MainLayout extends AppLayout {
 
             List<Workspace> workspaces = messengingService.getUserWorkspaces(user);
 
-            appName = new H2(workspaces.get(0).getName());
-
-            section = new com.vaadin.flow.component.html.Section(appName,
+            section = new com.vaadin.flow.component.html.Section(
                     createChannelsList(user, workspaces), createFooter());
         } else {
-            appName = new H2("Login Required");
+            H2 appName = new H2("Login Required");
+            appName.addClassNames("app-name");
+
             section = new com.vaadin.flow.component.html.Section(appName, createFooter());
         }
 
-        appName.addClassNames("app-name");
         section.addClassNames("drawer-section");
 
         return section;

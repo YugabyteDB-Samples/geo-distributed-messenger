@@ -55,4 +55,8 @@ public class MessagingService {
         return messageRepository.findByChannelId(channel.getId());
     }
 
+    public Message addMessage(Message newMessage) {
+        return messageRepository.save(newMessage);
+    }
+
 }

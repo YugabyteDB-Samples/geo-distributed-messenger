@@ -59,3 +59,26 @@
     display: contents;
     font-weight: 500;
 }
+
+.app-message-view {
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    min-height: 100%;
+    align-items: stretch;
+}
+
+.app-message-view-list {
+    flex: 1;
+    overflow: auto;
+    border-bottom: 1px solid var(--lumo-contrast-10pct);
+}
+
+.app-message-view-new-message-area {
+    display: flex;
+    width: 100%;
+}
+
+.app-workspace-view-combo-box {
+    margin-left: 20px;
+}

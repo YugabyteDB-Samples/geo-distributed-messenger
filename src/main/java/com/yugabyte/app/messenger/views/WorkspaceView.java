@@ -34,6 +34,8 @@ public class WorkspaceView extends VerticalLayout {
 
         createChannelsListBox();
 
+        setPadding(true);
+
         add(wComboBox, channelsList);
         setSizeFull();
     }
@@ -44,6 +46,8 @@ public class WorkspaceView extends VerticalLayout {
 
         selectedWorkspace = workspaces.get(0);
         wComboBox.setValue(selectedWorkspace);
+
+        wComboBox.addClassName("app-workspace-view-combo-box");
 
         wComboBox.setItemLabelGenerator(workspace -> {
             return workspace.getName();
