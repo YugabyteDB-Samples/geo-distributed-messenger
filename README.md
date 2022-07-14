@@ -32,28 +32,28 @@ This is a more advanced option that allows you to experiment with a multi-node Y
 1. Start a three-node cluster in Docker:
     ```shell
     rm -r ~/yb_docker_data
-mkdir ~/yb_docker_data
+    mkdir ~/yb_docker_data
 
-docker network create yugabytedb_network
+    docker network create yugabytedb_network
 
-docker run -d --name yugabytedb_node1 --net yugabytedb_network \
-  -p 7001:7000 -p 9000:9000 -p 5433:5433 \
-  -v ~/yb_docker_data/node1:/home/yugabyte/yb_data --restart unless-stopped \
-  yugabytedb/yugabyte:latest \
-  bin/yugabyted start --listen=yugabytedb_node1 \
-  --base_dir=/home/yugabyte/yb_data --daemon=false
-  
-docker run -d --name yugabytedb_node2 --net yugabytedb_network \
-  -v ~/yb_docker_data/node2:/home/yugabyte/yb_data --restart unless-stopped \
-  yugabytedb/yugabyte:latest \
-  bin/yugabyted start --join=yugabytedb_node1 --listen=yugabytedb_node2 \
-  --base_dir=/home/yugabyte/yb_data --daemon=false
-      
-docker run -d --name yugabytedb_node3 --net yugabytedb_network \
-  -v ~/yb_docker_data/node3:/home/yugabyte/yb_data --restart unless-stopped \
-  yugabytedb/yugabyte:latest \
-  bin/yugabyted start --join=yugabytedb_node1 --listen=yugabytedb_node3 \
-  --base_dir=/home/yugabyte/yb_data --daemon=false
+    docker run -d --name yugabytedb_node1 --net yugabytedb_network \
+    -p 7001:7000 -p 9000:9000 -p 5433:5433 \
+    -v ~/yb_docker_data/node1:/home/yugabyte/yb_data --restart unless-stopped \
+    yugabytedb/yugabyte:latest \
+    bin/yugabyted start --listen=yugabytedb_node1 \
+    --base_dir=/home/yugabyte/yb_data --daemon=false
+    
+    docker run -d --name yugabytedb_node2 --net yugabytedb_network \
+    -v ~/yb_docker_data/node2:/home/yugabyte/yb_data --restart unless-stopped \
+    yugabytedb/yugabyte:latest \
+    bin/yugabyted start --join=yugabytedb_node1 --listen=yugabytedb_node2 \
+    --base_dir=/home/yugabyte/yb_data --daemon=false
+        
+    docker run -d --name yugabytedb_node3 --net yugabytedb_network \
+    -v ~/yb_docker_data/node3:/home/yugabyte/yb_data --restart unless-stopped \
+    yugabytedb/yugabyte:latest \
+    bin/yugabyted start --join=yugabytedb_node1 --listen=yugabytedb_node3 \
+    --base_dir=/home/yugabyte/yb_data --daemon=false
     ```
 2. Make sure all the nodes joined the cluster: http://127.0.0.1:7001
 
