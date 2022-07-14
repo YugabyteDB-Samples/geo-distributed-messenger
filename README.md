@@ -112,6 +112,8 @@ YugabyteDB Managed is suggested for production deployments. Deploy a single-regi
     pwd: password
     ```
 
+5. Take the JAR file and proceed deploying it in your production environment.
+
 ## Deploy to Heroku
 
 1. Create a production build:
@@ -119,7 +121,61 @@ YugabyteDB Managed is suggested for production deployments. Deploy a single-regi
     mvn clean package -Pprod
     ```
 
-2. 
+2. Log in to your Heroku account:
+    ```shell
+    heroku login
+    ```
+
+3. Install the Heroku Java Plugin:
+    ```shell
+    heroku plugins:install java
+    ```
+
+4. Create a new application in Heroku:
+    ```shell
+    heroku create geo-distributed-messenger
+    ```
+
+5. Provide app and DB-specific configuration settings to Heroku:
+    ```shell
+    heroku config:set PORT=<YOUR_SPRING_SERVER_PORT> -a geo-distributed-messenger
+    heroku config:set DB_URL="<YOUR_DB_URL>" -a geo-distributed-messenger
+    heroku config:set DB_USER=<YOUR_DB_USER> -a geo-distributed-messenger
+    heroku config:set DB_PWD=<YOUR_DB_PWD> -a geo-distributed-messenger
+    ```
+
+6. (Optional) If you use YugabyteDB Managed then you need to whitelist your Heroku app on the database end:
+    * Install the [Proximo add-on](https://elements.heroku.com/addons/proximo):
+        ```shell
+        heroku addons:create proximo:development -a geo-distributed-messenger
+        ```
+    * Find your static IP address (see [details here](https://devcenter.heroku.com/articles/proximo#determining-your-static-ip-address-1)):
+        ```shell
+        heroku config -a geo-distributed-messenger | grep PROXIMO_URL
+        ```
+    * Add the IPs to YugabyteDB Managed [IP Allow list](https://docs.yugabyte.com/preview/yugabyte-cloud/cloud-secure-clusters/add-connections/).
+
+5. Deploy the production build to Heroku:
+    ```shell
+    heroku deploy:jar target/geo-distributed-messenger-1.0-SNAPSHOT.jar -a geo-distributed-messenger
+    ```
+
+6. Check the applicatin logs to confirm the flight is normal:
+    ```shell
+    heroku logs --tail -a geo-distributed-messenger
+    ```
+7. Open the app:
+    ```shell
+    heroku open -a geo-distributed-messenger
+    ```
+
+9. Log in under a test user:
+    ```shell
+    username: test@gmail.com
+    pwd: password
+    ```
+
+Use the `heroku restart -a geo-distributed-messenger` command if you need to restart the app for any reason.
 
 ## Project structure
 
