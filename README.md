@@ -1,8 +1,26 @@
-# Geo-Distributed Messenger
+# Geo-Distributed Messenger With Vaadin and YugabyteDB
 
 This project is a geo-distributed messenger that is inspired by Slack. The messenger is build on Vaadin, Spring Boot and YugabyteDB. PostgreSQL can be used as an alternate database for single-zone deployments. YugabyteDB is used as a distributed database that can span multiple zones and regions. 
 
 This is an ongoing project, so, expect the source code and description to change significantly over the time. The first version of the app will operate within a single cloud region while the next versions will function across continents.
+
+<!-- vscode-markdown-toc -->
+
+- [Geo-Distributed Messenger With Vaadin and YugabyteDB](#hasura-and-yugabyte-e-commerce-application)
+  - [Start a database](#prerequisite)
+    - [Start PostgreSQL](#)
+    - [Start YugabyteDB Locally](#)
+    - [Start YugabyteDB Managed](#)
+  - [Run Application](#setup-project)
+  - [Deploy to Production](#run-application-locally)
+  - [Deploy to Heroku](#run-application-in-cloud)
+  - [Project structure](#application-architectural-overview)
+
+<!-- vscode-markdown-toc-config
+    numbering=false
+    autoSave=true
+    /vscode-markdown-toc-config -->
+<!-- /vscode-markdown-toc -->
 
 ## Start a database
 
