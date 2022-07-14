@@ -6,15 +6,15 @@ This is an ongoing project, so, expect the source code and description to change
 
 <!-- vscode-markdown-toc -->
 
-- [Geo-Distributed Messenger With Vaadin and YugabyteDB](#hasura-and-yugabyte-e-commerce-application)
-  - [Start a database](#prerequisite)
-    - [Start PostgreSQL](#)
-    - [Start YugabyteDB Locally](#)
-    - [Start YugabyteDB Managed](#)
-  - [Run Application](#setup-project)
-  - [Deploy to Production](#run-application-locally)
-  - [Deploy to Heroku](#run-application-in-cloud)
-  - [Project structure](#application-architectural-overview)
+- [Geo-Distributed Messenger With Vaadin and YugabyteDB](#geo-distributed-messenger-with-vaadin-and-yugabytedb)
+  - [Start a database](#start-a-database)
+    - [Start PostgreSQL](#start-postgresql)
+    - [Start YugabyteDB Locally](#start-yugabytedb-locally)
+    - [Start YugabyteDB Managed](#start-yugabytedb-managed)
+  - [Run Application](#run-application)
+  - [Deploy to Production](#deploy-to-production)
+  - [Deploy to Heroku](#deploy-to-heroku)
+  - [Project structure](#project-structure)
 
 <!-- vscode-markdown-toc-config
     numbering=false
