@@ -29,3 +29,5 @@ target
 package-lock.json
 webpack.generated.js
 .vscode/settings.json
+src/main/resources/application-personal.properties
+src/main/resources/root.crt

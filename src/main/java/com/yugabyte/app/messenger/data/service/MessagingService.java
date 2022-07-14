@@ -52,7 +52,7 @@ public class MessagingService {
     }
 
     public List<Message> getMessages(Channel channel) {
-        return messageRepository.findByChannelId(channel.getId());
+        return messageRepository.findByChannelIdOrderByIdAsc(channel.getId());
     }
 
     public Message addMessage(Message newMessage) {
