@@ -163,15 +163,20 @@ YugabyteDB Managed is suggested for production deployments. Deploy a single-regi
     ```
 
 6. (Optional) If you use YugabyteDB Managed then you need to whitelist your Heroku app on the database end:
-    * Install the [Proximo add-on](https://elements.heroku.com/addons/proximo):
+    * Install the [Fixie Socks Add-On](https://elements.heroku.com/addons/fixie-socks):
         ```shell
         heroku addons:create proximo:development -a geo-distributed-messenger
         ```
-    * Find your static IP address (see [details here](https://devcenter.heroku.com/articles/proximo#determining-your-static-ip-address-1)):
+    * Find your static IP addresses on the Fixie Socks Dashboard:
         ```shell
-        heroku config -a geo-distributed-messenger | grep PROXIMO_URL
+        heroku addons:open fixie-socks
         ```
     * Add the IPs to YugabyteDB Managed [IP Allow list](https://docs.yugabyte.com/preview/yugabyte-cloud/cloud-secure-clusters/add-connections/).
+
+    * Request the app to route all TCP/IP requests through the proxy:
+        ```shell
+        heroku config:set USE_FIXIE_SOCKS=true -a geo-distributed-messenger
+        ```
 
 5. Deploy the production build to Heroku:
     ```shell
