@@ -13,21 +13,26 @@ CREATE TABLE Profile (
     phone text NOT NULL,
     country_code varchar(3),
     hashed_password text NOT NULL,
-    user_picture_url text,
-    PRIMARY KEY(id, country_code)
+    user_picture_url text
 ) PARTITION BY LIST (country_code);
 
 CREATE TABLE Profile_USA
     PARTITION OF Profile
-    FOR VALUES IN ('USA') TABLESPACE usa_tablespace;
+    (id, full_name, email, phone, country_code, hashed_password, user_picture_url,
+    PRIMARY KEY(id, country_code))
+    FOR VALUES IN ('USA') TABLESPACE us_east1_ts;
 
 CREATE TABLE Profile_EU
     PARTITION OF Profile
-    FOR VALUES IN ('DEU') TABLESPACE eu_tablespace;
+    (id, full_name, email, phone, country_code, hashed_password, user_picture_url,
+    PRIMARY KEY(id, country_code))
+    FOR VALUES IN ('DEU') TABLESPACE europe_west3_ts;
 
 CREATE TABLE Profile_APAC
     PARTITION OF Profile
-    FOR VALUES IN ('JPN') TABLESPACE apac_tablespace;
+    (id, full_name, email, phone, country_code, hashed_password, user_picture_url,
+    PRIMARY KEY(id, country_code))
+    FOR VALUES IN ('JPN') TABLESPACE asia_east1_ts;
 
 
 
@@ -36,21 +41,26 @@ CREATE SEQUENCE workspace_id_seq CACHE 100;
 CREATE TABLE Workspace(
     id integer DEFAULT nextval('workspace_id_seq'),
     name text NOT NULL,
-    country_code varchar(3),
-    PRIMARY KEY(id, country_code)
+    country_code varchar(3)
 ) PARTITION BY LIST (country_code);
 
 CREATE TABLE Workspace_USA
     PARTITION OF Workspace
-    FOR VALUES IN ('USA') TABLESPACE usa_tablespace;
+    (id, name, country_code,
+    PRIMARY KEY(id, country_code))
+    FOR VALUES IN ('USA') TABLESPACE us_east1_ts;
 
 CREATE TABLE Workspace_EU
     PARTITION OF Workspace
-    FOR VALUES IN ('DEU') TABLESPACE eu_tablespace;
+    (id, name, country_code,
+    PRIMARY KEY(id, country_code))
+    FOR VALUES IN ('DEU') TABLESPACE europe_west3_ts;
 
 CREATE TABLE Workspace_APAC
     PARTITION OF Workspace
-    FOR VALUES IN ('JPN') TABLESPACE apac_tablespace;
+    (id, name, country_code,
+    PRIMARY KEY(id, country_code))
+    FOR VALUES IN ('JPN') TABLESPACE asia_east1_ts;
 
 
 
@@ -58,21 +68,26 @@ CREATE TABLE Workspace_Profile(
     workspace_id integer,
     profile_id integer,
     workspace_country varchar(3),
-    profile_country varchar(3) NOT NULL,
-    PRIMARY KEY(workspace_id, profile_id, workspace_country)
+    profile_country varchar(3) NOT NULL
 ) PARTITION BY LIST (workspace_country);
 
 CREATE TABLE Workspace_Profile_USA
     PARTITION OF Workspace_Profile
-    FOR VALUES IN ('USA') TABLESPACE usa_tablespace;
+    (workspace_id, profile_id, workspace_country, profile_country,
+    PRIMARY KEY(workspace_id, profile_id, workspace_country))
+    FOR VALUES IN ('USA') TABLESPACE us_east1_ts;
 
 CREATE TABLE Workspace_Profile_EU
     PARTITION OF Workspace_Profile
-    FOR VALUES IN ('DEU') TABLESPACE eu_tablespace;
+    (workspace_id, profile_id, workspace_country, profile_country,
+    PRIMARY KEY(workspace_id, profile_id, workspace_country))
+    FOR VALUES IN ('DEU') TABLESPACE europe_west3_ts;
 
 CREATE TABLE Workspace_Profile_APAC
     PARTITION OF Workspace_Profile
-    FOR VALUES IN ('JPN') TABLESPACE apac_tablespace;
+    (workspace_id, profile_id, workspace_country, profile_country,
+    PRIMARY KEY(workspace_id, profile_id, workspace_country))
+    FOR VALUES IN ('JPN') TABLESPACE asia_east1_ts;
 
 
 
@@ -82,21 +97,26 @@ CREATE TABLE Channel(
     id integer DEFAULT nextval('channel_id_seq'),
     name text NOT NULL,
     workspace_id integer NOT NULL,
-    country_code text NOT NULL,
-    PRIMARY KEY(id, country_code)
+    country_code text NOT NULL
 ) PARTITION BY LIST (country_code);
 
 CREATE TABLE Channel_USA
     PARTITION OF Channel
-    FOR VALUES IN ('USA') TABLESPACE usa_tablespace;
+    (id, name, workspace_id, country_code,
+    PRIMARY KEY(id, country_code))
+    FOR VALUES IN ('USA') TABLESPACE us_east1_ts;
 
 CREATE TABLE Channel_EU
     PARTITION OF Channel
-    FOR VALUES IN ('DEU') TABLESPACE eu_tablespace;
+    (id, name, workspace_id, country_code,
+    PRIMARY KEY(id, country_code))
+    FOR VALUES IN ('DEU') TABLESPACE europe_west3_ts;
 
 CREATE TABLE Channel_APAC
     PARTITION OF Channel
-    FOR VALUES IN ('JPN') TABLESPACE apac_tablespace;
+    (id, name, workspace_id, country_code,
+    PRIMARY KEY(id, country_code))
+    FOR VALUES IN ('JPN') TABLESPACE asia_east1_ts;
 
 
 
@@ -109,18 +129,23 @@ CREATE TABLE Message(
     message text NOT NULL,
     sent_at TIMESTAMP NOT NULL DEFAULT NOW(),
     country_code varchar(3) NOT NULL,
-    sender_country_code varchar(3) NOT NULL,
-    PRIMARY KEY(id, country_code)
+    sender_country_code varchar(3) NOT NULL
 ) PARTITION BY LIST (country_code);
 
 CREATE TABLE Message_USA
     PARTITION OF Message
-    FOR VALUES IN ('USA') TABLESPACE usa_tablespace;
+    (id, channel_id, sender_id, message, sent_at, country_code, sender_country_code,
+    PRIMARY KEY(id, country_code))
+    FOR VALUES IN ('USA') TABLESPACE us_east1_ts;
 
 CREATE TABLE Message_EU
     PARTITION OF Message
-    FOR VALUES IN ('DEU') TABLESPACE eu_tablespace;
+    (id, channel_id, sender_id, message, sent_at, country_code, sender_country_code,
+    PRIMARY KEY(id, country_code))
+    FOR VALUES IN ('DEU') TABLESPACE europe_west3_ts;
 
 CREATE TABLE Message_APAC
     PARTITION OF Message
-    FOR VALUES IN ('JPN') TABLESPACE apac_tablespace;
+    (id, channel_id, sender_id, message, sent_at, country_code, sender_country_code,
+    PRIMARY KEY(id, country_code))
+    FOR VALUES IN ('JPN') TABLESPACE asia_east1_ts;
