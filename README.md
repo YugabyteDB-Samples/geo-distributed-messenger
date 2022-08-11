@@ -162,11 +162,19 @@ YugabyteDB Managed is suggested for production deployments. Deploy a single-regi
     heroku config:set DB_PWD=<YOUR_DB_PWD> -a geo-distributed-messenger
     ```
 
+    Note, the `DB_URL` should be in the following format
+    ```shell
+    jdbc:postgresql://us-east1.5659d27a-5ff0-4095-8ebc-427566c787c7.gcp.ybdb.io:5433/yugabyte?ssl=true&sslmode=require
+    ```
+
 6. (Optional) If you use YugabyteDB Managed then you need to whitelist your Heroku app on the database end:
     * Install the [Fixie Socks Add-On](https://elements.heroku.com/addons/fixie-socks):
         ```shell
-        heroku addons:create proximo:development -a geo-distributed-messenger
+        heroku addons:create fixie-socks:handlebar -a geo-distributed-messenger
         ```
+
+        Replace `handlebar` with your fixie socks package.
+        
     * Find your static IP addresses on the Fixie Socks Dashboard:
         ```shell
         heroku addons:open fixie-socks
