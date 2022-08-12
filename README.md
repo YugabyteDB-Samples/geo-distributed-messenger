@@ -164,7 +164,7 @@ YugabyteDB Managed is suggested for production deployments. Deploy a single-regi
 
     Note, the `DB_URL` should be in the following format
     ```shell
-    jdbc:postgresql://us-east1.5659d27a-5ff0-4095-8ebc-427566c787c7.gcp.ybdb.io:5433/yugabyte?ssl=true&sslmode=require
+    jdbc:postgresql://us-east1.9b01e695-51d1-4666-adae-a1e7e13ccfb9.gcp.ybdb.io:5433/yugabyte?ssl=true&sslmode=require
     ```
 
 6. (Optional) If you use YugabyteDB Managed then you need to whitelist your Heroku app on the database end:

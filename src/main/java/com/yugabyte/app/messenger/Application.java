@@ -9,6 +9,7 @@ import com.vaadin.flow.theme.lumo.Lumo;
 import java.net.Authenticator;
 import java.net.MalformedURLException;
 import java.net.PasswordAuthentication;
+import java.net.ProxySelector;
 import java.net.URL;
 
 import org.springframework.boot.SpringApplication;
@@ -50,12 +51,12 @@ public class Application extends SpringBootServletInitializer implements AppShel
                 String fixieUser = fixieCredentials[0];
                 String fixiePassword = fixieCredentials[1];
 
-                System.setProperty("socksProxyHost", fixieHost);
-                System.setProperty("socksProxyPort", fixiePort);
-
-                System.out.println("Enabled Fixie Socks Proxy:" + fixieHost);
+                DatabaseProxySelector proxySelector = new DatabaseProxySelector(fixieHost, Integer.parseInt(fixiePort));
+                ProxySelector.setDefault(proxySelector);
 
                 Authenticator.setDefault(new ProxyAuthenticator(fixieUser, fixiePassword));
+
+                System.out.println("Enabled Fixie Socks Proxy:" + fixieHost);
             }
         }
     }
