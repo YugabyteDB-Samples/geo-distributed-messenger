@@ -3,6 +3,17 @@
 You can deploy multiple application instances across several geographies in Google Cloud with the `gcloud` tool. 
 Follow this guide to create a custom project, provision infrastructure and start an app on one or multiple VMs.
 
+## Prepare JAR executable
+
+1. Build the package:
+    ```shell
+    mvn clean package -Pprod
+    ```
+2. Upload to the repo:
+    ```shell
+    mv 
+    ```
+
 ## Create Project and Network
 
 1. Navigate to the `gcloud` directory within the project structure:
@@ -33,22 +44,27 @@ Follow this guide to create a custom project, provision infrastructure and start
 
 ## Create First VM
 
-1. Create an instance in the US West region:
+1. Create an instance and run the app in a target cloud region:
     ```shell
-    gcloud compute instances create messenger-us-west-instance \
-        --project=geo-distributed-messenger \
-        --machine-type=e2-small \
-        --boot-disk-type=pd-balanced --boot-disk-size=10GB \
-        --network=default --zone=us-west2-a \
-        --image-family=ubuntu-1804-lts --image-project=ubuntu-os-cloud \
-        --tags=geo-messenger-instance, \
-        --metadata-from-file=startup-script=startup_script.sh, \
-        --metadata=PORT=80,DB_URL={YOUR_URL},DB_USER={YOUR_USERNAME},DB_PWD={YOUR_PASSWORD}
+    ./start_single_app_instance.sh \
+        -n {INSTANCE_NAME} \
+        -z {CLOUD_ZONE_NAME} \
+        -a {APP_PORT_NUMBER} \
+        -c "{DB_CONNECTION_ENDPOINT}" \
+        -u {DB_USER} \
+        -p {DB_PWD}
     ```
-    Fill in several placeholders in the command above:
-        * `{YOUR_URL}` - in the format of `"jdbc:postgresql://us-east1.9b01e695-51d1-4666-adae-a1e7e13ccfb9.gcp.ybdb.io:5433/yugabyte?ssl=true&sslmode=require"` (put in `"`)
-        * `{YOUR_USERNAME}` - YugabyteDB user.
-        * `{YOUR_PASSWORD}` - YugabyteDB password.
+
+    For instance, the command below starts the app in the US West region:
+    ```shell
+    ./start_single_app_instance.sh \
+        -n messenger-us-west-instance \
+        -z us-west2-a \
+        -a 80 \
+        -c "jdbc:postgresql://us-east1.9b01e695-51d1-4666-adae-a1e7e13ccfb9.gcp.ybdb.io:5433/yugabyte?ssl=true&sslmode=require" \
+        -u admin \
+        -p super-complex-password
+    ```
 
 2. (YugabyteDB Managed specific) Add VMs external IP to the [IP Allow list](https://docs.yugabyte.com/preview/yugabyte-cloud/cloud-secure-clusters/add-connections/#assign-an-ip-allow-list-to-a-cluster).
 

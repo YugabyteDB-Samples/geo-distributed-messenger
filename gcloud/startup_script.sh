@@ -20,8 +20,8 @@ if [ ! -f "/etc/initialized_on_startup" ]; then
     sudo mkdir /opt/messenger
     sudo chmod -R 777 /opt/messenger 
     git clone https://github.com/YugabyteDB-Samples/geo-distributed-messenger.git /opt/messenger
-    cd /opt/messenger
-    mvn clean package -Pprod
+    # cd /opt/messenger
+    # mvn clean package -Pprod
 
     sudo touch /etc/initialized_on_startup
 else
@@ -37,4 +37,4 @@ export DB_URL=$(curl http://metadata.google.internal/computeMetadata/v1/instance
 export DB_USER=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/DB_USER -H "Metadata-Flavor: Google")
 export DB_PWD=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/DB_PWD -H "Metadata-Flavor: Google")
 
-java -jar /opt/messenger/target/geo-distributed-messenger-1.0-SNAPSHOT.jar
+java -jar /opt/messenger/release/geo-distributed-messenger.jar
