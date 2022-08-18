@@ -59,13 +59,55 @@ Follow this guide to create a custom project, provision infrastructure and start
 
 3. Open Google Cloud Logging and wait while the VM finishes executing the `startup_script.sh` that sets up the environment and start an application instance. It can take between 5-10 minutes.
 
-or log in to the machine and check the status this way:
-```shell
-gcloud compute ssh messenger-us-west-instance --project=geo-distributed-messenger
+    Alternatively, check the status from the terminal:
+    ```shell
+    gcloud compute ssh messenger-us-west-instance --project=geo-distributed-messenger
 
-sudo journalctl -u google-startup-scripts.service -f
-```
+    sudo journalctl -u google-startup-scripts.service -f
+    ```
+
+4. Open the app by connecting to `http://{INSTANCE_EXTERNAL_IP}`. Use `test@gmail.com` and `password` as testing credentials.
+    Note, you can find the external address by running this command:
+    ```shell
+    gcloud compute instances list --project=geo-distributed-messenger
+    ```
 
 ## Deploy More Instances
 
-TBD - first, released the current version by preloading a JAR to GitHub (under the releases?). It takes too much time to build the file from sources.
+Use the command from the previous section to start two more application instances in different cloud regions.
+
+1. Open a terminal tab and start the second instance in the US Central region (Iowa):
+    ```shell
+    ./start_single_app_instance.sh \
+        -n messenger-us-central-instance \
+        -z us-central1-a \
+        -a 80 \
+        -c "{DB_CONNECTION_ENDPOINT}" \
+        -u {DB_USER} \
+        -p {DB_PWD}
+    ```
+
+    Check that the application is started normally by following the logs of the VM startup script:
+    ```shell
+    gcloud compute ssh messenger-us-central-instance --project=geo-distributed-messenger
+
+    sudo journalctl -u google-startup-scripts.service -f
+    ```
+2. Open another terminal tab and start the third VM with the app in the US East region (N. Virginia, nearby Washington DC):
+    ```shell
+    ./start_single_app_instance.sh \
+        -n messenger-us-east-instance \
+        -z us-east4-a \
+        -a 80 \
+        -c "{DB_CONNECTION_ENDPOINT}" \
+        -u {DB_USER} \
+        -p {DB_PWD}
+    ```
+
+    Check that the application is started normally by following the logs of the VM startup script:
+    ```shell
+    gcloud compute ssh messenger-us-east-instance --project=geo-distributed-messenger
+
+    sudo journalctl -u google-startup-scripts.service -f
+    ```
+
