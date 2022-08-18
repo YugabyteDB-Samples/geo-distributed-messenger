@@ -3,17 +3,6 @@
 You can deploy multiple application instances across several geographies in Google Cloud with the `gcloud` tool. 
 Follow this guide to create a custom project, provision infrastructure and start an app on one or multiple VMs.
 
-## Prepare JAR executable
-
-1. Build the package:
-    ```shell
-    mvn clean package -Pprod
-    ```
-2. Upload to the repo:
-    ```shell
-    mv 
-    ```
-
 ## Create Project and Network
 
 1. Navigate to the `gcloud` directory within the project structure:
