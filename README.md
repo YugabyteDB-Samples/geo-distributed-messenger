@@ -2,7 +2,14 @@
 
 This project is a geo-distributed messenger that is inspired by Slack. The messenger is build on Vaadin, Spring Boot and YugabyteDB. PostgreSQL can be used as an alternate database for single-zone deployments. YugabyteDB is used as a distributed database that can span multiple zones and regions. 
 
-This is an ongoing project, so, expect the source code and description to change significantly over the time. The first version of the app will operate within a single cloud region while the next versions will function across continents.
+
+This is an ongoing project, so, expect the source code and description to change significantly over the time. The development journey is documented in the following articles:
+* [Geo What? A Quick Introduction to Geo-Distributed Apps](https://dzone.com/articles/geo-what-a-quick-introduction-to-geo-distributed-a)
+* [What Makes the Architecture of Geo-Distributed Apps Different?](https://dzone.com/articles/what-makes-the-architecture-of-geo-distributed-app)
+* [How to Build a Multi-Zone Java App in Days With Vaadin, YugabyteDB, and Heroku](https://dzone.com/articles/how-to-build-a-multi-zone-java-app-in-days-with-va)
+* [How To Connect a Heroku Java App to a Cloud-Native Database](https://dzone.com/articles/how-to-connect-a-heroku-app-to-a-yugabytedb-manage)
+
+Table of Contents:
 
 <!-- vscode-markdown-toc -->
 
@@ -12,8 +19,9 @@ This is an ongoing project, so, expect the source code and description to change
     - [Start YugabyteDB Locally](#start-yugabytedb-locally)
     - [Start YugabyteDB Managed](#start-yugabytedb-managed)
   - [Run Application](#run-application)
-  - [Deploy to Production](#deploy-to-production)
+  - [Deploy to Production](#deploy-on-bare-metal)
   - [Deploy to Heroku](#deploy-to-heroku)
+  - [Deploy Across Multiple Google Cloud Regions](#deploy-across-multiple-Google-cloud-regions)
   - [Project structure](#project-structure)
 
 <!-- vscode-markdown-toc-config
@@ -108,7 +116,7 @@ YugabyteDB Managed is suggested for production deployments. Deploy a single-regi
     pwd: password
     ```
 
-## Deploy to Production
+## Deploy on Bare Metal
 
 1. Create a production build:
     ```shell
@@ -207,6 +215,10 @@ YugabyteDB Managed is suggested for production deployments. Deploy a single-regi
     ```
 
 Use the `heroku restart -a geo-distributed-messenger` command if you need to restart the app for any reason.
+
+## Deploy Across Multiple Google Cloud Regions
+
+Follow [these instructions](#gcloud/gcloud_deployment.md) to deploy multiple application instances across several cloud regions.
 
 ## Project structure
 
