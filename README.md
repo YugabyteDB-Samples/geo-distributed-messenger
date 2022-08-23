@@ -19,7 +19,7 @@ Table of Contents:
     - [Start YugabyteDB Locally](#start-yugabytedb-locally)
     - [Start YugabyteDB Managed](#start-yugabytedb-managed)
   - [Run Application](#run-application)
-  - [Deploy to Production](#deploy-on-bare-metal)
+  - [Deploy on Bare Metal](#deploy-on-bare-metal)
   - [Deploy to Heroku](#deploy-to-heroku)
   - [Deploy Across Multiple Google Cloud Regions](#deploy-across-multiple-Google-cloud-regions)
   - [Project structure](#project-structure)
@@ -218,7 +218,7 @@ Use the `heroku restart -a geo-distributed-messenger` command if you need to res
 
 ## Deploy Across Multiple Google Cloud Regions
 
-Follow [these instructions](#gcloud/gcloud_deployment.md) to deploy multiple application instances across several cloud regions.
+Follow [these instructions](gcloud/gcloud_deployment.md) to deploy multiple application instances across several cloud regions.
 
 ## Project structure
 
