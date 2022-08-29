@@ -227,6 +227,9 @@ Reserve IP addresses that application users will use to reach the load balancer:
     ```shell
     gcloud compute health-checks create http http-basic-check \
         --project=geo-distributed-messenger \
+        --check-interval=20s --timeout=5s \
+        --healthy-threshold=2 --unhealthy-threshold=2 \
+        --request-path=/login \
         --port 80
     ```
 
@@ -234,8 +237,7 @@ Reserve IP addresses that application users will use to reach the load balancer:
     ```shell
     gcloud compute backend-services create geo-messenger-backend-service \
         --project=geo-distributed-messenger \
-        --load-balancing-scheme=EXTERNAL_MANAGED \
-        --global-health-checks \
+        --load-balancing-scheme=EXTERNAL \
         --protocol=HTTP \
         --port-name=http \
         --health-checks=http-basic-check \
@@ -272,13 +274,13 @@ Reserve IP addresses that application users will use to reach the load balancer:
     ```
 4. Create a default URL map to route all the incoming requests to the geo messenger backend service (in practice, you can define backend services and URL maps for different microservices):
     ```shell
-    gcloud compute url-maps create web-map \
+    gcloud compute url-maps create web-map-http \
         --project=geo-distributed-messenger \
         --default-service geo-messenger-backend-service
     ```
-### Configure HTTPs Proxy
+### Configure HTTP Proxy
 
-External traffic goes to the load balancer (and the to the backend services and backends) through the HTTPS proxy.
+<!-- External traffic goes to the load balancer (and the to the backend services and backends) through the HTTPS proxy.
 
 1. Create a self-signed private key and certificate (for testing only):
     ```shell
@@ -303,34 +305,41 @@ External traffic goes to the load balancer (and the to the backend services and 
         --project=geo-distributed-messenger \
         --certificate https_proxy_cert.pem \
         --private-key https_proxy_private_key.pem
-    ```
+    ``` -->
 
-3. Create a target HTTPS proxy to route requests to the URL map:
+<!-- 3. Create a target HTTPS proxy to route requests to the URL map:
     ```shell
     gcloud compute target-https-proxies create https-load-balancer-proxy \
         --project=geo-distributed-messenger \
         --url-map web-map --ssl-certificates geo-messenger-ssl-cert
-    ```
+    ``` -->
 
-4. Create two global forwarding rules to route incoming requests to the proxy, one for each of the IP addresses you created:
+1. Create a target HTTP proxy to route user requests to the URL map:
     ```shell
-    gcloud compute forwarding-rules create https-content-rule \
+    gcloud compute target-http-proxies create http-load-balancer-proxy \
         --project=geo-distributed-messenger \
-        --load-balancing-scheme=EXTERNAL_MANAGED \
+        --url-map web-map-http \
+        --global
+    ```
+2. Create two global forwarding rules to route incoming requests to the proxy, one for each of the IP addresses you created:
+    ```shell
+    gcloud compute forwarding-rules create http-content-rule \
+        --project=geo-distributed-messenger \
+        --load-balancing-scheme=EXTERNAL \
         --network-tier=PREMIUM \
         --address=load-balancer-ipv4-1  \
         --global \
-        --target-https-proxy=https-load-balancer-proxy \
-        --ports=443
+        --target-http-proxy=http-load-balancer-proxy \
+        --ports=80
     
-    gcloud compute forwarding-rules create https-content-ipv6-rule \
+    gcloud compute forwarding-rules create http-content-ipv6-rule \
         --project=geo-distributed-messenger \
         --load-balancing-scheme=EXTERNAL_MANAGED \
         --network-tier=PREMIUM \
         --address=load-balancer-ipv6-1  \
         --global \
-        --target-https-proxy=https-load-balancer-proxy \
-        --ports=443
+        --target-http-proxy=http-load-balancer-proxy \
+        --ports=80
     ```
 
 After creating the global forwarding rule, it can take several minutes for your configuration to propagate worldwide.
@@ -352,7 +361,8 @@ After creating the global forwarding rule, it can take several minutes for your 
 
 2. Send a request through the load balancer:
     ```shell
-    curl -k https://34.160.248.129
+    curl -k http://34.160.49.56
     ```
 
-TODO troubleshoot: https://cloud.google.com/load-balancing/docs/https/troubleshooting-ext-https-lbs
+## Clear Resources
+

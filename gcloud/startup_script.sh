@@ -21,8 +21,13 @@ if [ ! -f "/etc/initialized_on_startup" ]; then
     sudo chmod -R 777 /opt/messenger 
     git clone https://github.com/YugabyteDB-Samples/geo-distributed-messenger.git /opt/messenger
     cd /opt/messenger
-    mvn clean package -Pprod
 
+    #Option #1: copy the released JAR to the target folder (it will be started from there)
+    mkdir target
+    cp release/geo-distributed-messenger-1.0-SNAPSHOT.jar target
+    #Option #2: comment two lines above and build the app from sources
+    #mvn clean package -Pprod
+    
     sudo touch /etc/initialized_on_startup
 else
 # Executed on restarts

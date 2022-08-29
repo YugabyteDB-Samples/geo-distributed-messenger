@@ -32,6 +32,4 @@ webpack.generated.js
 .vscode/settings.json
 src/main/resources/application-personal.properties
 src/main/resources/root.crt
-gcloud/https_proxy_cert.pem
-gcloud/https_proxy_csr.pem
-gcloud/https_proxy_private_key.pem
+gcloud/*.pem
