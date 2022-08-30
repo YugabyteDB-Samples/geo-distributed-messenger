@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class FileUploadService {
 
-    @Value("${service.uploader.path}")
+    @Value("${kong.attachments.gateway}")
     private String uploaderUrl;
 
     public Optional<String> uploadAttachment(String fileName, String mimeType,

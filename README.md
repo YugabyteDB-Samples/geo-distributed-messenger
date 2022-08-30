@@ -18,7 +18,7 @@ Table of Contents:
     - [Start PostgreSQL](#start-postgresql)
     - [Start YugabyteDB Locally](#start-yugabytedb-locally)
     - [Start YugabyteDB Managed](#start-yugabytedb-managed)
-  - [Run Application](#run-application)
+  - [Start Microservices](#start-microservices)
   - [Deploy on Bare Metal](#deploy-on-bare-metal)
   - [Deploy to Heroku](#deploy-to-heroku)
   - [Deploy Across Multiple Google Cloud Regions](#deploy-across-multiple-Google-cloud-regions)
@@ -30,6 +30,14 @@ Table of Contents:
     /vscode-markdown-toc-config -->
 <!-- /vscode-markdown-toc -->
 
+## Create Custom Network
+
+To allow containers easily discover and communicate to each other:
+
+```shell
+docker network create geo-messenger-net
+```
+
 ## Start a database
 
 First, you need to start a database. The app works with PostgreSQL and YugabyteDB which is a PostgreSQL-compliant database.
@@ -40,8 +48,10 @@ This might be the easiest option to get started. Especially if you're planning t
 
 1. Start PostgreSQL in Docker:
     ```shell
-    docker run --name postgresql -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=password \
-    -p 5432:5432 -v ~/postgresql_data/:/var/lib/postgresql/data -d postgres
+    docker run --name postgresql --net geo-messenger-net \
+        -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=password \
+        -p 5432:5432 \
+        -v ~/postgresql_data/:/var/lib/postgresql/data -d postgres:13.8
     ```
 
 2. Open a psql connection:
@@ -60,22 +70,20 @@ This is a more advanced option that allows you to experiment with a multi-node Y
     rm -r ~/yb_docker_data
     mkdir ~/yb_docker_data
 
-    docker network create yugabytedb_network
-
-    docker run -d --name yugabytedb_node1 --net yugabytedb_network \
+    docker run -d --name yugabytedb_node1 --net geo-messenger-net \
     -p 7001:7000 -p 9000:9000 -p 5433:5433 \
     -v ~/yb_docker_data/node1:/home/yugabyte/yb_data --restart unless-stopped \
     yugabytedb/yugabyte:latest \
     bin/yugabyted start --listen=yugabytedb_node1 \
     --base_dir=/home/yugabyte/yb_data --daemon=false
     
-    docker run -d --name yugabytedb_node2 --net yugabytedb_network \
+    docker run -d --name yugabytedb_node2 --net geo-messenger-net \
     -v ~/yb_docker_data/node2:/home/yugabyte/yb_data --restart unless-stopped \
     yugabytedb/yugabyte:latest \
     bin/yugabyted start --join=yugabytedb_node1 --listen=yugabytedb_node2 \
     --base_dir=/home/yugabyte/yb_data --daemon=false
         
-    docker run -d --name yugabytedb_node3 --net yugabytedb_network \
+    docker run -d --name yugabytedb_node3 --net geo-messenger-net \
     -v ~/yb_docker_data/node3:/home/yugabyte/yb_data --restart unless-stopped \
     yugabytedb/yugabyte:latest \
     bin/yugabyted start --join=yugabytedb_node1 --listen=yugabytedb_node3 \
@@ -98,7 +106,108 @@ YugabyteDB Managed is suggested for production deployments. Deploy a single-regi
 
 2. Use the [CloudShell](https://docs.yugabyte.com/preview/quick-start-yugabytedb-managed/#connect-to-your-cluster-using-cloud-shell) to load the schema from `<project>/scripts/messenger_schema.sql` file.
 
-## Run Application
+## Configure Kong Gateway
+
+Prepare the Kong database - Postgres or YugabyteDB are used by Kong itself:
+
+1. Connect to Postgres and create the `kong` database:
+    ```shell
+    psql -h 127.0.0.1 --username=postgres
+
+    create database kong;
+
+    \q
+    ```
+
+2. Set up the Kong database by applying migrations:
+    ```shell
+    docker run --rm --net geo-messenger-net \
+    -e "KONG_DATABASE=postgres" \
+    -e "KONG_PG_HOST=postgresql" \
+    -e "KONG_PG_USER=postgres" \
+    -e "KONG_PG_PASSWORD=password" \
+    kong:2.8.1-alpine kong migrations bootstrap
+    ```
+3. Start a container with Kong Gateway:
+    ```shell
+    docker run -d --name kong-gateway \
+    --net geo-messenger-net \
+    -e "KONG_DATABASE=postgres" \
+    -e "KONG_PG_HOST=postgresql" \
+    -e "KONG_PG_USER=postgres" \
+    -e "KONG_PG_PASSWORD=password" \
+    -e "KONG_PROXY_ACCESS_LOG=/dev/stdout" \
+    -e "KONG_ADMIN_ACCESS_LOG=/dev/stdout" \
+    -e "KONG_PROXY_ERROR_LOG=/dev/stderr" \
+    -e "KONG_ADMIN_ERROR_LOG=/dev/stderr" \
+    -e "KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl" \
+    -p 8000:8000 \
+    -p 8443:8443 \
+    -p 127.0.0.1:8001:8001 \
+    -p 127.0.0.1:8444:8444 \
+    kong:2.8.1-alpine
+    ```
+
+4. Verify the installation:
+    ```shell
+    curl -i -X GET --url http://localhost:8001/services
+    ```
+
+Refer to this installation guide for details: https://docs.konghq.com/gateway/latest/install-and-run/docker/
+
+## Start Attachments Microservice
+
+1. Navigate to the microservice directory:
+    ```shell
+    cd attachments 
+    ```
+
+2. Start the service:
+    ```shell
+    mvn spring-boot:run
+    ```
+    Alternatively, you can start the app from your IDE. Just run the `AttachmentsApplication.java` class.
+
+The service will start listening on `http://localhost:8081/` for incoming requests.
+
+## Create Kong Route for Attachments
+
+Use Kong Admin API to configure the Kong Service and Route that will lead to the Attachements microservice.
+
+1. Create a Kong Service:
+    ```shell
+    curl -i -X POST \
+        --url http://localhost:8001/services/ \
+         --data 'name=attachments-service' \
+        --data 'url=http://host.docker.internal:8081'
+    ```
+
+
+    where:
+    * `name` is the name of the Service
+    * `url` is the address of the Attachment application
+    * `host.docker.internal` - an internal Docker DNS name used by containers to connect to the host. Works for Mac OS and Windows. [Extra step needs to be done for Linux](https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach)
+
+2. Issue the following `POST` requests to add two Routes for the `attachments-service`:
+    ```shell
+    curl -i -X POST http://localhost:8001/services/attachments-service/routes \
+     -d "name=upload-route" \
+     -d "paths[]=/upload" \
+     -d "strip_path=false"
+
+    curl -i -X POST http://localhost:8001/services/attachments-service/routes \
+     -d "name=ping-route" \
+     -d "paths[]=/ping" \
+     -d "strip_path=false"
+    ```
+3. Confirm Kong can reach out to the Attachments service:
+    ```shell
+    curl -i -X GET http://localhost:8000/ping
+
+    (has to be proxied to http://host.docker.internal:8081/ping)
+    ```
+
+## Start Messenging Microservice
 
 1. Provide the database connectivity settings in the `application-dev.properties` file (PostgreSQL is used by default):
 
@@ -141,6 +250,8 @@ YugabyteDB Managed is suggested for production deployments. Deploy a single-regi
 5. Take the JAR file and proceed deploying it in your production environment.
 
 ## Deploy to Heroku
+
+(The instruction is provided for the Messaging microservice only. You need to deploy the Attachments service and Kong Gateway separately to enable the files uploading feature)
 
 1. Create a production build:
     ```shell
