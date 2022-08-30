@@ -22,14 +22,14 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-node_modules
-frontend/generated
-target
+messenger/node_modules
+messenger/frontend/generated
+*/target
 .vscode
 .DS_Store
 package-lock.json
 webpack.generated.js
 .vscode/settings.json
-src/main/resources/application-personal.properties
-src/main/resources/root.crt
+messenger/src/main/resources/application-personal.properties
+messenger/src/main/resources/root.crt
 gcloud/*.pem

@@ -1,2 +1,0 @@
-DROP SCHEMA IF EXISTS Messenger CASCADE;
-
