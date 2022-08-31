@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class AttachmentsApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(AttachmentsApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(AttachmentsApplication.class, args);
+    }
 
 }

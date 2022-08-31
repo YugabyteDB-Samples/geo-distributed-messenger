@@ -58,6 +58,7 @@ CREATE TABLE Message (
     sender_id integer NOT NULL,
     message text NOT NULL,
     sent_at timestamp NOT NULL DEFAULT NOW(),
+    attachment boolean NOT NULL DEFAULT FALSE,
     country_code varchar(3) NOT NULL,
     sender_country_code varchar(3) NOT NULL,
     PRIMARY KEY (id, country_code),

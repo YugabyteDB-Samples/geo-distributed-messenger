@@ -127,6 +127,7 @@ CREATE TABLE Message(
     channel_id integer,
     sender_id integer NOT NULL,
     message text NOT NULL,
+    attachment boolean NOT NULL DEFAULT FALSE,
     sent_at TIMESTAMP NOT NULL DEFAULT NOW(),
     country_code varchar(3) NOT NULL,
     sender_country_code varchar(3) NOT NULL

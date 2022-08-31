@@ -32,6 +32,8 @@ public class Message {
     @NotEmpty
     private String message;
 
+    private boolean attachment;
+
     @CreationTimestamp
     private Timestamp sentAt;
 
@@ -73,6 +75,14 @@ public class Message {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public boolean isAttachment() {
+        return attachment;
+    }
+
+    public void setAttachment(boolean attachment) {
+        this.attachment = attachment;
     }
 
     public Timestamp getSentAt() {

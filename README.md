@@ -106,6 +106,28 @@ YugabyteDB Managed is suggested for production deployments. Deploy a single-regi
 
 2. Use the [CloudShell](https://docs.yugabyte.com/preview/quick-start-yugabytedb-managed/#connect-to-your-cluster-using-cloud-shell) to load the schema from `<project>/scripts/messenger_schema.sql` file.
 
+## Start Minio
+
+[Minio](https://min.io) is used in local deployments as an object store for pictures. 
+
+1. Start the Minio service in Docker:
+    ```shell
+    mkdir -p ~/minio/data
+
+    docker run -d \
+    --net geo-messenger-net \
+    -p 9100:9000 \
+    -p 9101:9001 \
+    --name minio1 \
+    -v ~/minio/data:/data \
+    -e "MINIO_ROOT_USER=minio_user" \
+    -e "MINIO_ROOT_PASSWORD=password" \
+    quay.io/minio/minio:RELEASE.2022-08-26T19-53-15Z server /data --console-address ":9001"
+    ```
+
+2. Open the Minio console and log in using the `minio_user` as the user and `password` as the password:
+    http://127.0.0.1:9101
+
 ## Configure Kong Gateway
 
 Prepare the Kong database - Postgres or YugabyteDB are used by Kong itself:
