@@ -1,4 +1,4 @@
-# Deploying App Instances With GCloud
+# Application Deployment in Google Cloud
 
 You can deploy multiple application instances across several geographies in Google Cloud with the `gcloud` tool. 
 Follow this guide to create a custom project, provision infrastructure and start an app on one or multiple VMs.
