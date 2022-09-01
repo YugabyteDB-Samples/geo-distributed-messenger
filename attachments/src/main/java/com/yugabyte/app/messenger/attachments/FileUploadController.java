@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.yugabyte.app.messenger.attachments.service.ObjectStorageService;
+
 @Controller
 public class FileUploadController {
     @Autowired
-    private ObjectStorage storage;
+    private ObjectStorageService storage;
 
     @PostMapping("/upload")
     public ResponseEntity<String> handleFileUpload(@RequestBody byte[] file,
@@ -33,7 +35,7 @@ public class FileUploadController {
             fos.write(file);
             System.out.println("Succesfully stored file locally: " + targetFile.getAbsolutePath());
 
-            Optional<String> objectUrl = storage.storeFile(targetFile.getAbsolutePath(), fileName, contentType);
+            Optional<String> objectUrl = storage.uploadFile(targetFile.getAbsolutePath(), fileName, contentType);
 
             if (objectUrl.isPresent()) {
                 return ResponseEntity.ok(objectUrl.get());

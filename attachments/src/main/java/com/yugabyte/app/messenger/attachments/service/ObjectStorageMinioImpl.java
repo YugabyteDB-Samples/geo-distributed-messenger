@@ -1,35 +1,33 @@
-package com.yugabyte.app.messenger.attachments;
+package com.yugabyte.app.messenger.attachments.service;
 
 import java.util.Optional;
-
-import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.SetBucketPolicyArgs;
 import io.minio.UploadObjectArgs;
+import static com.yugabyte.app.messenger.attachments.service.ObjectStorageService.*;
 
-@Service
-public class ObjectStorage {
-    private final static String PICTURES_BUCKET = "pictures";
-
-    @Value("${object-storage.host}")
+class ObjectStorageMinioImpl implements ObjectStorage {
     private String storageHost;
 
-    @Value("${object-storage.port}")
     private int storagePort;
 
-    @Value("${object-storage.user}")
     private String storageUser;
 
-    @Value("${object-storage.password}")
     private String storagePassword;
 
     private volatile MinioClient client;
 
+    public ObjectStorageMinioImpl(String storageHost, int storagePort, String storageUser, String storagePassword) {
+        this.storageHost = storageHost;
+        this.storagePort = storagePort;
+        this.storageUser = storageUser;
+        this.storagePassword = storagePassword;
+    }
+
+    @Override
     public Optional<String> storeFile(String filePath, String fileName, String contentType) {
         System.out.printf("Uploading file %s %n", fileName);
 
@@ -37,11 +35,7 @@ public class ObjectStorage {
             initClient();
         }
 
-        String[] fileStructure = fileName.split("\\.");
-
-        String objectName = fileStructure[0] + "-" +
-                RandomStringUtils.randomAlphanumeric(15) +
-                "." + fileStructure[1];
+        String objectName = generateUniqueObjectName(fileName);
 
         try {
             client.uploadObject(UploadObjectArgs.builder()
@@ -98,4 +92,5 @@ public class ObjectStorage {
 
         return true;
     }
+
 }

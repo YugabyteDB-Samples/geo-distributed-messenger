@@ -23,33 +23,59 @@ https://cloud.google.com/load-balancing/docs/https/setting-up-https
     gcloud projects create geo-distributed-messenger --name="Geo-Distributed Messenger"
     ```
 
-4. Open Google Console and enable a billing account for the project: `https://console.cloud.google.com`
+4. Set the project as default:
+    ```shell
+    gcloud config set project geo-distributed-messenger
+    ```
+
+5. Open Google Console and enable a billing account for the project: `https://console.cloud.google.com`
+
+## Create Service Account 
+This is an optional step. Follow it only if you need to run the Attachments service on your machine and wish to store pictures in Google Cloud Storage instead of Minio. Otherwise, skip it.
+
+1. Create the service account:
+    ```shell
+    gcloud iam service-accounts create google-storage-account
+
+    gcloud projects add-iam-policy-binding geo-distributed-messenger \
+        --member="serviceAccount:google-storage-account@geo-distributed-messenger.iam.gserviceaccount.com" \
+        --role=roles/storage.admin
+    ```
+2. Generate the key:
+    ```shell
+    cd {project_dir}/glcoud
+
+    gcloud iam service-accounts keys create google-storage-account-key.json \
+        --iam-account=google-storage-account@geo-distributed-messenger.iam.gserviceaccount.com
+    ```
+3. Add a special environment variable. The attachments service will use it while working with the Cloud Storage SDK:
+    ```shell
+    echo 'export GOOGLE_APPLICATION_CREDENTIALS={absolute_path_to_the_key}/google-storage-account-key.json' >> ~/.bashrc 
+
+    echo 'export GOOGLE_APPLICATION_CREDENTIALS={absolute_path_to_the_key}/google-storage-account-key.json' >> ~/.zshrc
+    ```
 
 ## Create Custom Network
 
 1. Create the custom VPC network:
     ```shell
     gcloud compute networks create geo-messenger-network \
-        --project=geo-distributed-messenger \
         --subnet-mode=custom
     ```
 
 2. Create subnets in 3 regions of the USA:
     ```shell
     gcloud compute networks subnets create us-central-subnet \
-        --project=geo-distributed-messenger \
         --network=geo-messenger-network \
         --range=10.1.10.0/24 \
         --region=us-central1
     
     gcloud compute networks subnets create us-west-subnet \
-        --project=geo-distributed-messenger \
         --network=geo-messenger-network \
         --range=10.1.11.0/24 \
         --region=us-west2
 
     gcloud compute networks subnets create us-east-subnet \
-        --project=geo-distributed-messenger \
         --network=geo-messenger-network \
         --range=10.1.12.0/24 \
         --region=us-east4 
@@ -58,7 +84,6 @@ https://cloud.google.com/load-balancing/docs/https/setting-up-https
 3. Create a firewall rule to allow SSH connectivity to VMs within the VPC:
     ```shell
     gcloud compute firewall-rules create allow-ssh \
-        --project=geo-distributed-messenger \
         --network=geo-messenger-network \
         --action=allow \
         --direction=INGRESS \
@@ -70,7 +95,6 @@ https://cloud.google.com/load-balancing/docs/https/setting-up-https
 4. Create the healthcheck rule to allow the global load balancer and Google Cloud health checks to communicate with backend instances on port `80` and `443`:
     ```shell
     gcloud compute firewall-rules create allow-health-check-and-proxy \
-        --project=geo-distributed-messenger \
         --network=geo-messenger-network \
         --action=allow \
         --direction=ingress \
@@ -81,7 +105,6 @@ https://cloud.google.com/load-balancing/docs/https/setting-up-https
 5. (Optional) for dev and testing purpose only, add IPs of your personal laptop and other machines that need to communicate to the backend on port `80`:
     ```shell
     gcloud compute firewall-rules create allow-http-my-machines \
-        --project=geo-distributed-messenger \
         --network=geo-messenger-network \
         --action=allow \
         --direction=ingress \
