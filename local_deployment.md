@@ -6,15 +6,18 @@ The instruction is prepared for Unix-based systems. Feel free to submit a pull-r
 <!-- vscode-markdown-toc -->
 
 - [Local Application Deployment](#local-application-deployment)
-  - [Start a database](#start-a-database)
-    - [Start PostgreSQL](#start-postgresql)
-    - [Start YugabyteDB Locally](#start-yugabytedb-locally)
-    - [Start YugabyteDB Managed](#start-yugabytedb-managed)
-  - [Start Microservices](#start-microservices)
-  - [Deploy on Bare Metal](#deploy-on-bare-metal)
-  - [Deploy to Heroku](#deploy-to-heroku)
-  - [Deploy Across Multiple Google Cloud Regions](#deploy-across-multiple-Google-cloud-regions)
-  - [Project structure](#project-structure)
+  - [Prerequisite](#prerequisite)
+  - [Architecture](#architecture)
+  - [Create Custom Network](#create-custom-network)
+  - [Start Database](#start-database)
+    - [YugabyteDB](#yugabyteDB)
+    - [PostgreSQL](#postgresql)
+  - [Start Minio](#start-minio)
+  - [Configure Kong Gateway](#configure-kong-gateway)
+  - [Start Attachments Microservice](#start-attachments-microservice)
+  - [Create Kong Routes](#create-kong-routes)
+  - [Start Messenging Microservice](#start-messenging-microservice)
+  - [Clean Resources](#clean-resources)
 
 <!-- vscode-markdown-toc-config
     numbering=false
