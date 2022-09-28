@@ -1,6 +1,6 @@
 # Geo-Distributed Messenger With Vaadin, Kong and YugabyteDB
 
-This project is a geo-distributed messenger that is inspired by Slack. The messenger is build on Vaadin, Spring Boot and YugabyteDB. PostgreSQL can be used as an alternate database for single-zone deployments. YugabyteDB is used as a distributed database that can span multiple zones and regions. 
+This project is a geo-distributed messenger that is inspired by Slack. The messenger is build on Vaadin, Spring Boot, Kong and YugabyteDB. PostgreSQL can be used as an alternate database for single-zone deployments. YugabyteDB is used as a distributed database that can span multiple zones and regions. 
 
 ## Dev Journal
 
