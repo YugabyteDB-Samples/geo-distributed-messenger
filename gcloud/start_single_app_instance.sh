@@ -18,7 +18,7 @@ echo "Starting instance $name in zone $zone..."
 gcloud compute instances create $name \
         --project=$project_id \
         --service-account=google-storage-account@geo-distributed-messenger.iam.gserviceaccount.com \
-        --scopes=gke-default,logging-write,monitoring,monitoring-write,service-control,storage-full \
+        --scopes=default,storage-full \
         --machine-type=e2-highcpu-4 \
         --boot-disk-type=pd-balanced --boot-disk-size=10GB \
         --network=default --zone=$zone \
