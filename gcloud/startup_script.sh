@@ -4,7 +4,7 @@ if [ ! -f "/etc/initialized_on_startup" ]; then
     echo "Launching the VM for the first time."
 
     sudo apt-get update
-    sudo apt-get install zip unzip
+    sudo apt-get --yes --force-yes install zip unzip
 
     export SDKMAN_DIR="/usr/local/sdkman" && curl -s "https://get.sdkman.io" | bash
     source "/usr/local/sdkman/bin/sdkman-init.sh" 
@@ -31,7 +31,7 @@ if [ ! -f "/etc/initialized_on_startup" ]; then
     sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
     wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
     sudo apt-get update
-    sudo apt-get install postgresql-13 postgresql-client-13
+    sudo apt-get --yes --force-yes install postgresql-13 postgresql-client-13
 
     sudo service postgresql start
 
@@ -39,7 +39,7 @@ if [ ! -f "/etc/initialized_on_startup" ]; then
     echo "deb [trusted=yes] https://download.konghq.com/gateway-3.x-ubuntu-$(lsb_release -sc)/ \
     default all" | sudo tee /etc/apt/sources.list.d/kong.list
     sudo apt-get update
-    sudo apt install -y kong-enterprise-edition=3.0.0.0
+    sudo apt install --yes --force-yes kong-enterprise-edition=3.0.0.0
 
     sudo -u postgres psql -c "CREATE USER kong WITH PASSWORD 'password'"
     sudo -u postgres psql -c "CREATE DATABASE kong OWNER kong"

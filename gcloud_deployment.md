@@ -102,17 +102,8 @@ This is an optional step. Follow it only if you need to run the Attachments serv
         --source-ranges=130.211.0.0/22,35.191.0.0/16 \
         --rules=tcp:80,tcp:443
     ```
-5. Let your machine connect to the Kong Admin API (note, for prod you should replace `0.0.0.0/0` with your IPs):
-    ```shell
-    gcloud compute firewall-rules create allow-kong-admin-api \
-        --network=geo-messenger-network \
-        --action=allow \
-        --direction=ingress \
-        --target-tags=allow-http-my-machines \
-        --source-ranges=0.0.0.0/0 \
-        --rules=tcp:8001
     ```
-6. (Optional) for dev and testing purpose only, add IPs of your personal laptop and other machines that need to communicate to the backend on port `80` (note, you need to replace `0.0.0.0/0` with your IP):
+5. (Optional) for dev and testing purpose only, add IPs of your personal laptop and other machines that need to communicate to the backend on port `80` (note, you need to replace `0.0.0.0/0` with your IP):
     ```shell
     gcloud compute firewall-rules create allow-http-my-machines \
         --network=geo-messenger-network \
