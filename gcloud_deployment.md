@@ -23,7 +23,7 @@ https://cloud.google.com/load-balancing/docs/https/setting-up-https
     gcloud projects create geo-distributed-messenger --name="Geo-Distributed Messenger"
     ```
 
-4. Set the project as default:
+4. Set this new project as default:
     ```shell
     gcloud config set project geo-distributed-messenger
     ```
@@ -129,6 +129,7 @@ Use the `gcloud/create_instance_template.sh` script to create instance templates
     ```shell
     ./create_instance_template.sh \
         -n {TEMPLATE_NAME} \
+        -i {PROJECT_ID} \
         -r {CLOUD_REGION_NAME} \
         -s {NETWORK_SUBNET_NAME} \
         -a {APP_PORT_NUMBER} \
@@ -141,6 +142,7 @@ Use the `gcloud/create_instance_template.sh` script to create instance templates
     ```shell
     ./create_instance_template.sh \
         -n template-us-west \
+        -i geo-distributed-messenger \
         -r us-west2 \
         -s us-west-subnet \
         -a 80 \
@@ -153,6 +155,7 @@ Use the `gcloud/create_instance_template.sh` script to create instance templates
     ```shell
     ./create_instance_template.sh \
         -n template-us-central \
+        -i geo-distributed-messenger \
         -r us-central1 \
         -s us-central-subnet \
         -a 80 \
@@ -165,6 +168,7 @@ Use the `gcloud/create_instance_template.sh` script to create instance templates
     ```shell
     ./create_instance_template.sh \
         -n template-us-east \
+        -i geo-distributed-messenger \
         -r us-east4 \
         -s us-east-subnet \
         -a 80 \
@@ -178,15 +182,12 @@ Use the `gcloud/create_instance_template.sh` script to create instance templates
 1. Start an application instance in every region - US West, Central and East:
     ```shell
     gcloud compute instance-groups managed create ig-us-west \
-        --project=geo-distributed-messenger \
         --template=template-us-west --size=1 --zone=us-west2-b
 
     gcloud compute instance-groups managed create ig-us-central \
-        --project=geo-distributed-messenger \
         --template=template-us-central --size=1 --zone=us-central1-b
 
     gcloud compute instance-groups managed create ig-us-east \
-        --project=geo-distributed-messenger \
         --template=template-us-east --size=1 --zone=us-east4-b
     ```
 

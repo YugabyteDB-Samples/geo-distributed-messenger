@@ -93,7 +93,7 @@ export ATTACHMENTS_SERVICE_PORT=8081
 export ATTACHMENTS_SERVICE_STORAGE_IMPL=google-storage
 export ATTACHMENTS_SERVICE_GOOGLE_STORAGE_PROJECT_ID=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/GOOGLE_STORAGE_PROJECT_ID -H "Metadata-Flavor: Google")
 
-java -jar /opt/messenger/messenger/target/geo-distributed-messenger-1.0-SNAPSHOT.jar &
-java -jar /opt/messenger/attachments/target/attachments-0.0.1-SNAPSHOT.jar &
+nohup java -jar /opt/messenger/messenger/target/geo-distributed-messenger-1.0-SNAPSHOT.jar &
+nohup java -jar /opt/messenger/attachments/target/attachments-0.0.1-SNAPSHOT.jar &
 
 

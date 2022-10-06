@@ -1,9 +1,10 @@
 #! /bin/bash
 
-while getopts n:z:a:c:u:p: flag
+while getopts n:i:z:a:c:u:p: flag
 do
     case "${flag}" in
         n) name=${OPTARG};;
+        i) project_id=${OPTARG};;
         z) zone=${OPTARG};;
         a) port=${OPTARG};;
         c) url=${OPTARG};;
@@ -15,14 +16,14 @@ done
 echo "Starting instance $name in zone $zone..."
 
 gcloud compute instances create $name \
-        --project=geo-distributed-messenger \
-        --machine-type=e2-small \
+        --project=$project_id \
+        --machine-type=e2-highcpu-4 \
         --boot-disk-type=pd-balanced --boot-disk-size=10GB \
         --network=default --zone=$zone \
         --image-family=ubuntu-1804-lts --image-project=ubuntu-os-cloud \
         --tags=geo-messenger-instance, \
         --metadata-from-file=startup-script=startup_script.sh, \
-        --metadata=PORT=$port,DB_URL=$url,DB_USER=$user,DB_PWD=$pwd
+        --metadata=PORT=$port,DB_URL=$url,DB_USER=$user,DB_PWD=$pwd,ATTACHMENTS_SERVICE_GOOGLE_STORAGE_PROJECT_ID=$project_id
 
 if [ $? -eq 0 ]; then
     echo "Instance $name has been created!"
