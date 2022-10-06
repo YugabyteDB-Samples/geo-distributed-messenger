@@ -78,20 +78,17 @@ export SDKMAN_DIR="/usr/local/sdkman"
 source "/usr/local/sdkman/bin/sdkman-init.sh"
 
 sudo service postgresql start
-
 sudo kong start -c /etc/kong/kong.conf
 fi
 
-# Executed during the first VM start as well as on restarts
+# Configuring env variable for the Messaging microservice
 export PORT=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/PORT -H "Metadata-Flavor: Google")
 export DB_URL=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/DB_URL -H "Metadata-Flavor: Google")
 export DB_USER=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/DB_USER -H "Metadata-Flavor: Google")
 export DB_PWD=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/DB_PWD -H "Metadata-Flavor: Google")
-
-#Kong API endpoint that is used by the Messaging microservice
 export KONG_ATTACHMENTS_API_ROUTE=http://localhost:8000/upload
 
-#Configuring the Attachments microservice
+# Configuring env variable for the Attachments microservice
 export ATTACHMENTS_SERVICE_PORT=8081
 export ATTACHMENTS_SERVICE_STORAGE_IMPL=google-storage
 export ATTACHMENTS_SERVICE_GOOGLE_STORAGE_PROJECT_ID=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/GOOGLE_STORAGE_PROJECT_ID -H "Metadata-Flavor: Google")
