@@ -31,7 +31,8 @@ https://cloud.google.com/load-balancing/docs/https/setting-up-https
 5. Open Google Console and enable a billing account for the project: `https://console.cloud.google.com`
 
 ## Create Service Account 
-This is an optional step. Follow it only if you need to run the Attachments service on your machine and wish to store pictures in Google Cloud Storage instead of Minio. Otherwise, skip it.
+
+This is an OPTIONAL step. Follow it only if you need to run the Attachments service on your local machine and wish to store pictures in Google Cloud Storage instead of Minio. Otherwise, skip this section!
 
 1. Create the service account:
     ```shell

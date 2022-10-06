@@ -21,7 +21,6 @@ gcloud compute instance-templates create $name \
    --network=geo-messenger-network \
    --project=$project_id \
    --subnet=$subnet \
-   --service-account=google-storage-account@geo-distributed-messenger.iam.gserviceaccount.com \
    --scopes=default,storage-full \
    --machine-type=e2-highcpu-4 \
    --boot-disk-type=pd-balanced \
