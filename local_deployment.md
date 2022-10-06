@@ -79,18 +79,11 @@ Start a multi-node YugabyteDB cluster.
     ```
 2. Confirm the cluster is ready: http://127.0.0.1:7001
 
-3. Open a psql connection and load the schema:
-    ```shell
-    psql -h 127.0.0.1 -p 5433 yugabyte -U yugabyte -w
-
-    \i {project_dir}/geo-distributed-messenger/messenger/src/main/resources/messenger_schema.sql 
-    ```
-
 ### PostgreSQL
 
 You need to deploy PostgreSQL for Kong Gateway. The application can use any of the databases.
 
-1. Start PostgreSQL in Docker:
+Start PostgreSQL in Docker:
     ```shell
     mkdir ~/postgresql_data/
 
@@ -98,13 +91,6 @@ You need to deploy PostgreSQL for Kong Gateway. The application can use any of t
         -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=password \
         -p 5432:5432 \
         -v ~/postgresql_data/:/var/lib/postgresql/data -d postgres:13.8
-    ```
-
-2. (Execute this command only if PostgreSQL is used by the applicaion) Open a psql connection and load the schema:
-    ```shell
-    psql -h 127.0.0.1 --username=postgres
-
-    \i {project_dir}/geo-distributed-messenger/messenger/src/main/resources/messenger_schema.sql
     ```
 
 ## Start Minio
