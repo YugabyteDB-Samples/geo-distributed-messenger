@@ -210,17 +210,14 @@ For each instance group, define an HTTP service and map a port name to the relev
 
 ```shell
 gcloud compute instance-groups unmanaged set-named-ports ig-us-west \
-    --project=geo-distributed-messenger \
     --named-ports http:80 \
     --zone us-west2-b
 
 gcloud compute instance-groups unmanaged set-named-ports ig-us-central \
-    --project=geo-distributed-messenger \
     --named-ports http:80 \
     --zone us-central1-b
 
 gcloud compute instance-groups unmanaged set-named-ports ig-us-east \
-    --project=geo-distributed-messenger \
     --named-ports http:80 \
     --zone us-east4-b
 ```
@@ -235,13 +232,11 @@ on the user location and other rules.
 Reserve IP addresses that application users will use to reach the load balancer:
     ```shell
     gcloud compute addresses create load-balancer-ipv4-1 \
-        --project=geo-distributed-messenger \
         --ip-version=IPV4 \
         --network-tier=PREMIUM \
         --global
     
     gcloud compute addresses create load-balancer-ipv6-1 \
-        --project=geo-distributed-messenger \
         --ip-version=IPV6 \
         --network-tier=PREMIUM \
         --global
@@ -252,7 +247,6 @@ Reserve IP addresses that application users will use to reach the load balancer:
 1. Create a [health check](https://cloud.google.com/load-balancing/docs/health-checks) for application instances:
     ```shell
     gcloud compute health-checks create http http-basic-check \
-        --project=geo-distributed-messenger \
         --check-interval=20s --timeout=5s \
         --healthy-threshold=2 --unhealthy-threshold=2 \
         --request-path=/login \
@@ -262,7 +256,6 @@ Reserve IP addresses that application users will use to reach the load balancer:
 2. Create a [backend service](https://cloud.google.com/compute/docs/reference/latest/backendServices) for the geo-messenger instances. The [service is reponsible](https://cloud.google.com/load-balancing/docs/https/setting-up-https#gcloud-and-using-curl) for selecting an application instance (backend) for serving a particular user request:
     ```shell
     gcloud compute backend-services create geo-messenger-backend-service \
-        --project=geo-distributed-messenger \
         --load-balancing-scheme=EXTERNAL \
         --protocol=HTTP \
         --port-name=http \
@@ -272,7 +265,6 @@ Reserve IP addresses that application users will use to reach the load balancer:
 3. Add your instance groups as backends to the backend services:
     ```shell
     gcloud compute backend-services add-backend geo-messenger-backend-service \
-        --project=geo-distributed-messenger \
         --balancing-mode=UTILIZATION \
         --max-utilization=0.8 \
         --capacity-scaler=1 \
@@ -281,7 +273,6 @@ Reserve IP addresses that application users will use to reach the load balancer:
         --global
     
     gcloud compute backend-services add-backend geo-messenger-backend-service \
-        --project=geo-distributed-messenger \
         --balancing-mode=UTILIZATION \
         --max-utilization=0.8 \
         --capacity-scaler=1 \
@@ -290,7 +281,6 @@ Reserve IP addresses that application users will use to reach the load balancer:
         --global
     
     gcloud compute backend-services add-backend geo-messenger-backend-service \
-        --project=geo-distributed-messenger \
         --balancing-mode=UTILIZATION \
         --max-utilization=0.8 \
         --capacity-scaler=1 \
@@ -298,10 +288,9 @@ Reserve IP addresses that application users will use to reach the load balancer:
         --instance-group-zone=us-west2-b \
         --global
     ```
-4. Create a default URL map to route all the incoming requests to the geo messenger backend service (in practice, you can define backend services and URL maps for different microservices):
+4. Create a default URL map to route all the incoming requests to the geo messenger's backend service (in practice, you can define backend services and URL maps for different microservices):
     ```shell
     gcloud compute url-maps create web-map-http \
-        --project=geo-distributed-messenger \
         --default-service geo-messenger-backend-service
     ```
 ### Configure HTTP Proxy
@@ -343,14 +332,12 @@ Reserve IP addresses that application users will use to reach the load balancer:
 1. Create a target HTTP proxy to route user requests to the URL map:
     ```shell
     gcloud compute target-http-proxies create http-load-balancer-proxy \
-        --project=geo-distributed-messenger \
         --url-map web-map-http \
         --global
     ```
 2. Create two global forwarding rules to route incoming requests to the proxy, one for each of the IP addresses you created:
     ```shell
     gcloud compute forwarding-rules create http-content-rule \
-        --project=geo-distributed-messenger \
         --load-balancing-scheme=EXTERNAL \
         --network-tier=PREMIUM \
         --address=load-balancer-ipv4-1  \
@@ -359,7 +346,6 @@ Reserve IP addresses that application users will use to reach the load balancer:
         --ports=80
     
     gcloud compute forwarding-rules create http-content-ipv6-rule \
-        --project=geo-distributed-messenger \
         --load-balancing-scheme=EXTERNAL_MANAGED \
         --network-tier=PREMIUM \
         --address=load-balancer-ipv6-1  \
@@ -375,12 +361,10 @@ After creating the global forwarding rule, it can take several minutes for your 
 1. Record the IP addresses of the load balancer:
     ```shell
     gcloud compute addresses describe load-balancer-ipv4-1 \
-        --project=geo-distributed-messenger \
         --format="get(address)" \
         --global
     
     gcloud compute addresses describe load-balancer-ipv6-1 \
-        --project=geo-distributed-messenger \
         --format="get(address)" \
         --global
     ```
@@ -388,7 +372,22 @@ After creating the global forwarding rule, it can take several minutes for your 
 2. Send a request through the load balancer:
     ```shell
     curl -k http://34.160.49.56
+
+    wget --header "Upgrade-Insecure-Requests:0" --max-redirect=1 --no-cache 34.160.49.56:80
+
+    #This is another address created for the classic load balancer
+    gcloud compute addresses describe load-balancer-ip4-2 \
+        --format="get(address)" \
+        --global
+
+    curl -v 35.186.213.178
+    #request to the VM
+    curl -v 34.94.31.14
     ```
+
+Load balancer troubleshooting:
+https://cloud.google.com/load-balancing/docs/https/setting-up-http-https-redirect
+https://www.googlecloudcommunity.com/gc/Infrastructure-Compute-Storage/HTTP-HTTPS-load-balancer-includes-port-number-with-hostname/td-p/440053
 
 ## Clear Resources
 
