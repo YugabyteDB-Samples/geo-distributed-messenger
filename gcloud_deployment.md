@@ -101,7 +101,7 @@ This is an OPTIONAL step. Follow it only if you need to run the Attachments serv
         --direction=ingress \
         --target-tags=allow-health-check \
         --source-ranges=130.211.0.0/22,35.191.0.0/16 \
-        --rules=tcp:80,tcp:443
+        --rules=tcp:80
     ```
     ```
 5. (Optional) for dev and testing purpose only, add IPs of your personal laptop and other machines that need to communicate to the backend on port `80` (note, you need to replace `0.0.0.0/0` with your IP):
@@ -201,7 +201,7 @@ Use the `gcloud/create_instance_template.sh` script to create instance templates
 4. Open the app by connecting to `http://{INSTANCE_EXTERNAL_IP}`. Use `test@gmail.com` and `password` as testing credentials.
     Note, you can find the external address by running this command:
     ```shell
-    gcloud compute instances list --project=geo-distributed-messenger
+    gcloud compute instances list
     ```
 
 ## Add Named Ports to Instance Groups
@@ -250,7 +250,7 @@ Reserve IP addresses that application users will use to reach the load balancer:
 2. Create a [backend service](https://cloud.google.com/compute/docs/reference/latest/backendServices) that selects a VM instance for serving a particular user request:
     ```shell
     gcloud compute backend-services create load-balancer-backend-service \
-        --load-balancing-scheme=EXTERNAL \
+        --load-balancing-scheme=EXTERNAL_MANAGED \
         --protocol=HTTP \
         --port-name=http \
         --health-checks=load-balancer-http-basic-check \
@@ -300,7 +300,7 @@ Create a user-facing frontend (aka. HTTP(s) proxy) that receives requests and fo
 2. Create a global forwarding rule to route incoming requests to the proxy:
     ```shell
     gcloud compute forwarding-rules create load-balancer-http-frontend-forwarding-rule \
-        --load-balancing-scheme=EXTERNAL \
+        --load-balancing-scheme=EXTERNAL_MANAGED \
         --network-tier=PREMIUM \
         --address=load-balancer-public-ip  \
         --global \
@@ -321,7 +321,7 @@ After creating the global forwarding rule, it can take several minutes for your 
 
 2. Send a request through the load balancer:
     ```shell
-    curl -k http://{LOAD_BALANCER_PUBLIC_IP}
+    curl -v http://{LOAD_BALANCER_PUBLIC_IP}
     ```
 
     Note, it can take several minutes before the load balancer's settings get propogated globally. Until this happens, the `curl` command might hit different HTTP errors.
