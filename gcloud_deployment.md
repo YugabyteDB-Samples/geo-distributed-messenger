@@ -376,18 +376,28 @@ After creating the global forwarding rule, it can take several minutes for your 
     wget --header "Upgrade-Insecure-Requests:0" --max-redirect=1 --no-cache 34.160.49.56:80
 
     #This is another address created for the classic load balancer
-    gcloud compute addresses describe load-balancer-ip4-2 \
+    gcloud compute addresses describe load-balancer-public-ip \
         --format="get(address)" \
         --global
 
-    curl -v 35.186.213.178
+    curl -v --insecure -I https://34.160.49.56/login
     #request to the VM
-    curl -v 34.94.31.14
+    curl -v http://34.94.31.14/login
     ```
 
 Load balancer troubleshooting:
 https://cloud.google.com/load-balancing/docs/https/setting-up-http-https-redirect
 https://www.googlecloudcommunity.com/gc/Infrastructure-Compute-Storage/HTTP-HTTPS-load-balancer-includes-port-number-with-hostname/td-p/440053
+
+https://stackoverflow.com/questions/36174551/google-cloud-http-load-balancer-ssl-termination
+https://stackoverflow.com/questions/57449523/how-to-make-my-google-cloud-load-balancer-work
+https://serverfault.com/questions/868371/why-does-google-cloud-platform-recommend-using-https-behind-a-load-balancer
+https://stackoverflow.com/questions/70667371/redirect-loop-cloud-load-balancing-to-compute-engine-installed-wordpress
+
+Load balancer logging:
+https://cloud.google.com/load-balancing/docs/https/https-logging-monitoring?_ga=2.127944335.-222829076.1661396717
+
+resource.type="gce_backend_service" OR resource.type="http_load_balancer"
 
 ## Clear Resources
 
