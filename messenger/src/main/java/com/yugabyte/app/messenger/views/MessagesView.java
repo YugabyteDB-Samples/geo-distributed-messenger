@@ -34,9 +34,6 @@ import com.yugabyte.app.messenger.data.service.ProfileService;
 import com.yugabyte.app.messenger.event.ChannelChangeEvent;
 import com.yugabyte.app.messenger.security.AuthenticatedUser;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;

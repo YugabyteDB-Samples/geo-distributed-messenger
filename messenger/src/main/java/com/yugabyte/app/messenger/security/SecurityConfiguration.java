@@ -26,9 +26,9 @@ public class SecurityConfiguration extends VaadinWebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
 
-        http.requiresChannel()
-                .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
-                .requiresSecure();
+        // http.requiresChannel()
+        // .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
+        // .requiresSecure();
 
         setLoginView(http, LoginView.class, LOGOUT_URL);
     }

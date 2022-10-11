@@ -38,5 +38,4 @@ public class ProfileDetailsServiceImpl implements UserDetailsService {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
 
     }
-
 }
