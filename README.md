@@ -10,6 +10,7 @@ This is an ongoing project, so, expect the source code and description to change
 * [How to Build a Multi-Zone Java App in Days With Vaadin, YugabyteDB, and Heroku](https://dzone.com/articles/how-to-build-a-multi-zone-java-app-in-days-with-va)
 * [How To Connect a Heroku Java App to a Cloud-Native Database](https://dzone.com/articles/how-to-connect-a-heroku-app-to-a-yugabytedb-manage)
 * [Automating Java Application Deployment Across Multiple Cloud Regions](https://dzone.com/articles/automating-java-application-deployment-across-mult)
+* [Geo-distributed API Layer With Kong Gateway](https://dzone.com/articles/geo-distributed-api-layer-with-kong-gateway)
 
 
 ## Deployment Options
