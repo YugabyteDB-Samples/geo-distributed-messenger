@@ -30,6 +30,7 @@ public class Application extends SpringBootServletInitializer implements AppShel
 
     public static void main(String[] args) {
         enableFixieProxy();
+
         SpringApplication.run(Application.class, args);
     }
 

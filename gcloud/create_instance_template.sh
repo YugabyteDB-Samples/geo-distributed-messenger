@@ -29,7 +29,7 @@ gcloud compute instance-templates create $name \
    --image-project=ubuntu-os-cloud \
    --tags=allow-health-check,allow-ssh,allow-http-my-machines \
    --metadata-from-file=startup-script=startup_script.sh, \
-   --metadata=PORT=$port,DB_URL=$url,DB_USER=$user,DB_PWD=$pwd,GOOGLE_STORAGE_PROJECT_ID=$project_id
+   --metadata=PORT=$port,DB_URL=$url,DB_USER=$user,DB_PWD=$pwd,REGION=$region,PROJECT_ID=$project_id,GOOGLE_STORAGE_PROJECT_ID=$project_id
 
 if [ $? -eq 0 ]; then
     echo "Instance template $name has been created!"

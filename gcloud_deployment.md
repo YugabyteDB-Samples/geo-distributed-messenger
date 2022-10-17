@@ -32,7 +32,7 @@ https://cloud.google.com/load-balancing/docs/https/setting-up-https
 
 ## Create Service Account 
 
-This is an OPTIONAL step. Follow it only if you need to run the Attachments service on your local machine and wish to store pictures in Google Cloud Storage instead of Minio. Otherwise, skip this section!
+This is an OPTIONAL step. Follow the steps below only if you need to run the Attachments service on your local machine and wish to store pictures in Google Cloud Storage. Otherwise, skip this section!
 
 1. Create the service account:
     ```shell
@@ -41,6 +41,10 @@ This is an OPTIONAL step. Follow it only if you need to run the Attachments serv
     gcloud projects add-iam-policy-binding geo-distributed-messenger \
         --member="serviceAccount:google-storage-account@geo-distributed-messenger.iam.gserviceaccount.com" \
         --role=roles/storage.admin
+
+    gcloud projects add-iam-policy-binding geo-distributed-messenger \
+        --member="serviceAccount:google-storage-account@geo-distributed-messenger.iam.gserviceaccount.com" \
+        --role=roles/viewer
     ```
 2. Generate the key:
     ```shell
@@ -169,6 +173,44 @@ Use the `gcloud/create_instance_template.sh` script to create instance templates
         -p {DB_PWD}
     ```
 
+## Create Runtime Configurator
+
+This step is optional if you don't plan to change database connectivity settings in runtime. By default, the database settings are provided in the `application.properties` file along with other properties. The Runtime Configurator is useful when you need an instance of Messaging microservice to connect to a specific database deployment or node from its region.
+
+### Create Config
+
+1. Enable [Runtime Configurator APIs](https://cloud.google.com/deployment-manager/runtime-configurator)
+
+2. Create a `RuntimeConfig` for the Messaging microservice:
+    ```shell
+    gcloud beta runtime-config configs create messaging-microservice-settings
+    ```
+
+### Specify Database Configuration Settings
+
+An instance of the Messaging microservice subscribes for updates on the following configuration variables:
+    ```shell
+    {REGION}/spring.datasource.url
+    {REGION}/spring.datasource.username
+    {REGION}/spring.datasource.password
+    ```
+
+    where `{REGION}` is the region the VM was started in. You provided the region name earlier through the `-r` parameter of the `./create_instance_template.sh` command.
+
+Use the [Runtime Configurator APIs](https://cloud.google.com/deployment-manager/runtime-configurator/set-and-get-variables) to set and update those variable.
+
+As an example, this is how to update the database connectivity settings for all the VMs started in the `us-west2` region:
+    ```shell
+    gcloud beta runtime-config configs variables set us-west2/spring.datasource.username \
+      {NEW_DATABASE_USERNAME} --config-name messaging-microservice-settings --is-text
+    gcloud beta runtime-config configs variables set us-west2/spring.datasource.password \
+      {NEW_DATABASE_PASSWORD} --config-name messaging-microservice-settings --is-text
+    
+    gcloud beta runtime-config configs variables set us-west2/spring.datasource.url \
+      {NEW_DATABASE_URL} --config-name messaging-microservice-settings --is-text
+    ```
+    Note, the `spring.datasource.url` parameter MUST be updated the last because the application logic watches for its changes.
+    
 ## Start Application Instances
 
 1. Start an application instance in every region - US West, Central and East:
@@ -204,7 +246,11 @@ Use the `gcloud/create_instance_template.sh` script to create instance templates
     gcloud compute instances list
     ```
 
-## Add Named Ports to Instance Groups
+## Configure Global External Load Balancer
+
+Now that the instances are up and running, configure a global load balancer that will forward user requests to the nearest instance.
+
+### Add Named Ports to Instance Groups
 
 Set named ports for every instance group letting the load balancers know that the instances are capable of processing the HTTP requests on port `80`:
 
@@ -221,10 +267,6 @@ gcloud compute instance-groups unmanaged set-named-ports ig-us-east \
     --named-ports http:80 \
     --zone us-east4-b
 ```
-
-## Configure Global External Load Balancer
-
-Now that the instances are up and running, configure a global load balancer that will forward user requests to the nearest instance.
 
 ### Reserve external IP addresses
 
