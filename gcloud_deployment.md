@@ -107,7 +107,6 @@ This is an OPTIONAL step. Follow the steps below only if you need to run the Att
         --source-ranges=130.211.0.0/22,35.191.0.0/16 \
         --rules=tcp:80
     ```
-    ```
 5. (Optional) for dev and testing purpose only, add IPs of your personal laptop and other machines that need to communicate to the backend on port `80` (note, you need to replace `0.0.0.0/0` with your IP):
     ```shell
     gcloud compute firewall-rules create allow-http-my-machines \

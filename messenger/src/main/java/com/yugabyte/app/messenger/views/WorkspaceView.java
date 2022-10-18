@@ -2,16 +2,12 @@ package com.yugabyte.app.messenger.views;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ComponentUtil;
-import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.listbox.ListBox;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.shared.Registration;
 import com.yugabyte.app.messenger.data.entity.Channel;
 import com.yugabyte.app.messenger.data.entity.Workspace;
 import com.yugabyte.app.messenger.data.service.MessagingService;
