@@ -1,25 +1,34 @@
 package com.yugabyte.app.messenger.data.service;
 
+import com.yugabyte.app.messenger.data.DynamicDataSource;
 import com.yugabyte.app.messenger.data.entity.GeoId;
 import com.yugabyte.app.messenger.data.entity.Profile;
 import com.yugabyte.app.messenger.data.repository.ProfileRepository;
+import com.yugabyte.app.messenger.data.repository.SessionManagementRepository;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProfileService {
-
     private final ProfileRepository repository;
 
     private final HashMap<GeoId, Profile> localCache;
+
+    @Autowired
+    private DynamicDataSource dataSource;
+
+    @Autowired
+    private SessionManagementRepository sManagementRepository;
 
     @Autowired
     public ProfileService(ProfileRepository repository) {
@@ -50,7 +59,11 @@ public class ProfileService {
         return dbUser;
     }
 
+    @Transactional
     public Profile update(Profile entity) {
+        if (dataSource.isReplicaConnection())
+            sManagementRepository.switchToReadWriteTxMode();
+
         if (entity.getId() != 0) {
             GeoId geoId = new GeoId();
             geoId.setId(entity.getId());
@@ -62,7 +75,11 @@ public class ProfileService {
         return repository.save(entity);
     }
 
+    @Transactional
     public void delete(GeoId id) {
+        if (dataSource.isReplicaConnection())
+            sManagementRepository.switchToReadWriteTxMode();
+
         localCache.remove(id);
         repository.deleteById(id);
     }

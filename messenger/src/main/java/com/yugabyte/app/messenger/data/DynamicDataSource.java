@@ -1,5 +1,6 @@
 package com.yugabyte.app.messenger.data;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -10,30 +11,13 @@ import org.springframework.stereotype.Component;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-/*
- * 
- * 
- * # JPA configuration
-spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
-spring.jpa.generate-ddl=false
-
-# Schema initialization
-spring.sql.init.mode=always
-spring.sql.init.schema-locations=classpath:messenger_schema.sql 
-spring.sql.init.continue-on-error=true
-
-# HikariCP configuration
-spring.datasource.hikari.maximum-pool-size=5
-spring.datasource.hikari.schema=messenger
-
-# PostgreSQL configuration for local deployments
-spring.datasource.url = jdbc:postgresql://localhost:5432/postgres
-spring.datasource.username = postgres
-spring.datasource.password = password
- */
 @Component
 @Scope("singleton")
 public class DynamicDataSource extends AbstractRoutingDataSource {
+
+    private enum YugabyteConnectionType {
+        STANDARD, REPLICA, GEO
+    }
 
     public final static Integer CURRENT_DATA_SOURCE_KEY = 1;
 
@@ -75,6 +59,22 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
         cfg.setSchema(schemaName);
         cfg.setMaximumPoolSize(maxPoolSize);
 
+        if (isReplicaConnection()) {
+            System.out.println("Setting read only session characteristics for the replica connection");
+
+            cfg.setConnectionInitSql(
+                    "set session characteristics as transaction read only;" +
+                            "set yb_read_from_followers = true;");
+        }
+
+        // if (isGeoPartitionedConnection()) {
+        // System.out.println("Allowing global transactions for the geo-partitioned
+        // connection");
+
+        // cfg.setConnectionInitSql(
+        // "SET force_global_transaction = TRUE;");
+        // }
+
         HikariDataSource ds = new HikariDataSource(cfg);
 
         dataSources.put(CURRENT_DATA_SOURCE_KEY, ds);
@@ -98,4 +98,11 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
         afterPropertiesSet();
     }
 
+    public boolean isReplicaConnection() {
+        return yugabyteConnType.equalsIgnoreCase(YugabyteConnectionType.REPLICA.name());
+    }
+
+    private boolean isGeoPartitionedConnection() {
+        return yugabyteConnType.equalsIgnoreCase(YugabyteConnectionType.GEO.name());
+    }
 }
