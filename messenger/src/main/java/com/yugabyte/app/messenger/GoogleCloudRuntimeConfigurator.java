@@ -99,9 +99,12 @@ public class GoogleCloudRuntimeConfigurator {
                                 e1.printStackTrace();
                             }
 
+                            System.out.println("Configurator: reading the variable - " + apiEndpoint + DB_URL_VARIABLE);
                             Variable dbUrlVar = runtimeConfig.projects().configs().variables()
                                     .get(apiEndpoint + DB_URL_VARIABLE)
                                     .execute();
+
+                            System.out.print("Configurator: finished reading the variable");
 
                             checkDbUrlChanged(dbUrlVar);
                         } catch (GoogleJsonResponseException ex) {

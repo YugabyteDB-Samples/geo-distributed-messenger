@@ -423,5 +423,3 @@ After creating the global forwarding rule, it can take several minutes for your 
 
     Note, it can take several minutes before the load balancer's settings get propogated globally. Until this happens, the `curl` command might hit different HTTP errors.
 
-## Clear Resources
-
