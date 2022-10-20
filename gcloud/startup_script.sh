@@ -81,17 +81,23 @@ sudo service postgresql start
 sudo kong start -c /etc/kong/kong.conf
 fi
 
+export PROJECT_ID=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/PROJECT_ID -H "Metadata-Flavor: Google")
+export REGION=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/REGION -H "Metadata-Flavor: Google")
+
 # Configuring env variable for the Messaging microservice
 export PORT=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/PORT -H "Metadata-Flavor: Google")
 export DB_URL=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/DB_URL -H "Metadata-Flavor: Google")
 export DB_USER=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/DB_USER -H "Metadata-Flavor: Google")
 export DB_PWD=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/DB_PWD -H "Metadata-Flavor: Google")
-export KONG_ATTACHMENTS_API_ROUTE=http://localhost:8000/upload
+export DB_MODE=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/DB_MODE -H "Metadata-Flavor: Google")
 
 # Configuring env variable for the Attachments microservice
+export KONG_ATTACHMENTS_API_ROUTE=http://localhost:8000/upload
 export ATTACHMENTS_SERVICE_PORT=8081
 export ATTACHMENTS_SERVICE_STORAGE_IMPL=google-storage
-export ATTACHMENTS_SERVICE_GOOGLE_STORAGE_PROJECT_ID=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/GOOGLE_STORAGE_PROJECT_ID -H "Metadata-Flavor: Google")
+
+# Runtime Configurator
+export ENABLE_RUNTIME_CONFIGURATOR=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/ENABLE_RUNTIME_CONFIGURATOR -H "Metadata-Flavor: Google")
 
 nohup java -jar /opt/messenger/messenger/target/geo-distributed-messenger-1.0-SNAPSHOT.jar &
 nohup java -jar /opt/messenger/attachments/target/attachments-0.0.1-SNAPSHOT.jar &

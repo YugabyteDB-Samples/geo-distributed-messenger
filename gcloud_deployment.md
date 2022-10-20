@@ -83,7 +83,19 @@ This is an OPTIONAL step. Follow the steps below only if you need to run the Att
     gcloud compute networks subnets create us-east-subnet \
         --network=geo-messenger-network \
         --range=10.1.12.0/24 \
-        --region=us-east4 
+        --region=us-east4
+    ```
+3. Create subnets in Asia and Europe:
+    ```shell
+    gcloud compute networks subnets create europe-west-subnet \
+        --network=geo-messenger-network \
+        --range=10.2.10.0/24 \
+        --region=europe-west3
+
+    gcloud compute networks subnets create asia-east-subnet \
+        --network=geo-messenger-network \
+        --range=10.3.10.0/24 \
+        --region=asia-east1
     ```
 
 3. Create a firewall rule to allow SSH connectivity to VMs within the VPC:
@@ -118,60 +130,6 @@ This is an OPTIONAL step. Follow the steps below only if you need to run the Att
         --rules=tcp:80
     ```
 
-## Create Instance Templates
-
-Use the `gcloud/create_instance_template.sh` script to create instance templates for the US West, Central and East regions:
-    ```shell
-    ./create_instance_template.sh \
-        -n {TEMPLATE_NAME} \
-        -i {PROJECT_ID} \
-        -r {CLOUD_REGION_NAME} \
-        -s {NETWORK_SUBNET_NAME} \
-        -a {APP_PORT_NUMBER} \
-        -c "{DB_CONNECTION_ENDPOINT}" \
-        -u {DB_USER} \
-        -p {DB_PWD}
-    ```
-
-1. Create a template for the US West region:
-    ```shell
-    ./create_instance_template.sh \
-        -n template-us-west \
-        -i geo-distributed-messenger \
-        -r us-west2 \
-        -s us-west-subnet \
-        -a 80 \
-        -c "jdbc:postgresql://ADDRESS:5433/yugabyte?ssl=true&sslmode=require" \
-        -u {DB_USER} \
-        -p {DB_PWD}
-    ```
-
-2. Create another template for the US Central region:
-    ```shell
-    ./create_instance_template.sh \
-        -n template-us-central \
-        -i geo-distributed-messenger \
-        -r us-central1 \
-        -s us-central-subnet \
-        -a 80 \
-        -c "jdbc:postgresql://ADDRESS:5433/yugabyte?ssl=true&sslmode=require" \
-        -u {DB_USER} \
-        -p {DB_PWD}
-    ```
-
-3. And the last template for the US East region:
-    ```shell
-    ./create_instance_template.sh \
-        -n template-us-east \
-        -i geo-distributed-messenger \
-        -r us-east4 \
-        -s us-east-subnet \
-        -a 80 \
-        -c "jdbc:postgresql://ADDRESS:5433/yugabyte?ssl=true&sslmode=require" \
-        -u {DB_USER} \
-        -p {DB_PWD}
-    ```
-
 ## Create Runtime Configurator
 
 This step is optional if you don't plan to change database connectivity settings in runtime. By default, the database settings are provided in the `application.properties` file along with other properties. The Runtime Configurator is useful when you need an instance of Messaging microservice to connect to a specific database deployment or node from its region.
@@ -192,11 +150,13 @@ An instance of the Messaging microservice subscribes for updates on the followin
     {REGION}/spring.datasource.url
     {REGION}/spring.datasource.username
     {REGION}/spring.datasource.password
+    {REGION}/yugabytedb.connection.type
     ```
+    where:
+    * `{REGION}` is the region the VM was started in. You provide the region name via the `-r` parameter of the `./create_instance_template.sh` script.
+    * `yugabytedb.connection.type` - can be set to `standard`, `replica` or `geo`. Refer to the section below for details.
 
-    where `{REGION}` is the region the VM was started in. You provided the region name earlier through the `-r` parameter of the `./create_instance_template.sh` command.
-
-Use the [Runtime Configurator APIs](https://cloud.google.com/deployment-manager/runtime-configurator/set-and-get-variables) to set and update those variable.
+Once an instance of the microservice is started, you can use the [Runtime Configurator APIs](https://cloud.google.com/deployment-manager/runtime-configurator/set-and-get-variables) to set and update those variable.
 
 As an example, this is how to update the database connectivity settings for all the VMs started in the `us-west2` region:
     ```shell
@@ -204,15 +164,105 @@ As an example, this is how to update the database connectivity settings for all 
       {NEW_DATABASE_USERNAME} --config-name messaging-microservice-settings --is-text
     gcloud beta runtime-config configs variables set us-west2/spring.datasource.password \
       {NEW_DATABASE_PASSWORD} --config-name messaging-microservice-settings --is-text
-    
+    gcloud beta runtime-config configs variables set us-west2/yugabytedb.connection.type standard \
+     --config-name messaging-microservice-settings --is-text
+
     gcloud beta runtime-config configs variables set us-west2/spring.datasource.url \
       {NEW_DATABASE_URL} --config-name messaging-microservice-settings --is-text
     ```
     Note, the `spring.datasource.url` parameter MUST be updated the last because the application logic watches for its changes.
-    
+
+## Create Instance Templates
+
+Use the `gcloud/create_instance_template.sh` script to create instance templates for the US West, Central and East regions:
+    ```shell
+    ./create_instance_template.sh \
+        -n {INSTANCE_TEMPLATE_NAME} \
+        -i {PROJECT_ID} \
+        -r {CLOUD_REGION_NAME} \
+        -s {NETWORK_SUBNET_NAME} \
+        -d {ENABLE_DYNAMIC_RUNTIME_CONFIGURATOR}
+        -a {APP_PORT_NUMBER} \
+        -c "{DB_CONNECTION_ENDPOINT}" \
+        -u {DB_USER} \
+        -p {DB_PWD} \
+        -m {DB_MODE}
+    ```
+    where `DB_MODE` can be set to one of these values:
+    * 'standard' - the data source is connected to a standard/regular node. 
+    * 'replica' - the connection goes via a replica node.
+    * 'geo' - the data source is connected to a geo-partitioned cluster.
+
+
+1. Create a template for the US West, Central and East regions:
+    ```shell
+    ./create_instance_template.sh \
+        -n template-us-west \
+        -i geo-distributed-messenger \
+        -r us-west2 \
+        -s us-west-subnet \
+        -d true \
+        -a 80 \
+        -c "jdbc:postgresql://ADDRESS:5433/yugabyte?ssl=true&sslmode=require" \
+        -u {DB_USER} \
+        -p {DB_PWD} \
+        -m standard
+
+    ./create_instance_template.sh \
+        -n template-us-central \
+        -i geo-distributed-messenger \
+        -r us-central1 \
+        -s us-central-subnet \
+        -d true \
+        -a 80 \
+        -c "jdbc:postgresql://ADDRESS:5433/yugabyte?ssl=true&sslmode=require" \
+        -u {DB_USER} \
+        -p {DB_PWD} \
+        -m standard
+
+    ./create_instance_template.sh \
+        -n template-us-east \
+        -i geo-distributed-messenger \
+        -r us-east4 \
+        -s us-east-subnet \
+        -d true \
+        -a 80 \
+        -c "jdbc:postgresql://ADDRESS:5433/yugabyte?ssl=true&sslmode=require" \
+        -u {DB_USER} \
+        -p {DB_PWD} \
+        -m standard
+    ```
+2. Create a template for Europe:
+    ```shell
+    ./create_instance_template.sh \
+        -n template-europe-west \
+        -i geo-distributed-messenger \
+        -r europe-west3 \
+        -s europe-west-subnet \
+        -d true \
+        -a 80 \
+        -c "jdbc:postgresql://ADDRESS:5433/yugabyte?ssl=true&sslmode=require" \
+        -u {DB_USER} \
+        -p {DB_PWD} \
+        -m standard
+    ```  
+3. Create a template for Asia:
+    ```shell
+    ./create_instance_template.sh \
+        -n template-asia-east \
+        -i geo-distributed-messenger \
+        -r asia-east1 \
+        -s asia-east-subnet \
+        -d true \
+        -a 80 \
+        -c "jdbc:postgresql://ADDRESS:5433/yugabyte?ssl=true&sslmode=require" \
+        -u {DB_USER} \
+        -p {DB_PWD} \
+        -m standard
+    ```  
 ## Start Application Instances
 
-1. Start an application instance in every region - US West, Central and East:
+1. Start an application instance in every region:
     ```shell
     gcloud compute instance-groups managed create ig-us-west \
         --template=template-us-west --size=1 --zone=us-west2-b
@@ -222,6 +272,12 @@ As an example, this is how to update the database connectivity settings for all 
 
     gcloud compute instance-groups managed create ig-us-east \
         --template=template-us-east --size=1 --zone=us-east4-b
+
+    gcloud compute instance-groups managed create ig-europe-west \
+        --template=template-europe-west --size=1 --zone=europe-west3-b
+
+    gcloud compute instance-groups managed create ig-asia-east \
+        --template=template-asia-east --size=1 --zone=asia-east1-b
     ```
 
 2. (YugabyteDB Managed specific) Add VMs external IP to the [IP Allow list](https://docs.yugabyte.com/preview/yugabyte-cloud/cloud-secure-clusters/add-connections/#assign-an-ip-allow-list-to-a-cluster).

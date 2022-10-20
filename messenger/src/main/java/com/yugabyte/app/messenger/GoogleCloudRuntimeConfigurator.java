@@ -52,8 +52,8 @@ public class GoogleCloudRuntimeConfigurator {
         this.currentDBPassword = currentDBPassword;
         this.yugabyteConnType = yugabyteDBConnectionType;
 
-        if (System.getenv("enable.runtime.configurator") != null &&
-                Boolean.valueOf(System.getenv("enable.runtime.configurator"))) {
+        if (System.getenv("ENABLE_RUNTIME_CONFIGURATOR") != null &&
+                Boolean.valueOf(System.getenv("ENABLE_RUNTIME_CONFIGURATOR"))) {
             enable();
         }
     }

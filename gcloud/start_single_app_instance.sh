@@ -1,15 +1,18 @@
 #! /bin/bash
 
-while getopts n:i:z:a:c:u:p: flag
+while getopts n:i:r:s:d:a:c:u:p:m: flag
 do
     case "${flag}" in
         n) name=${OPTARG};;
         i) project_id=${OPTARG};;
-        z) zone=${OPTARG};;
+        r) region=${OPTARG};;
+        s) subnet=${OPTARG};;
+        d) dynamic_configurator=${OPTARG};;
         a) port=${OPTARG};;
         c) url=${OPTARG};;
         u) user=${OPTARG};;
         p) pwd=${OPTARG};;
+        m) mode=${OPTARG};;
     esac
 done
 
@@ -24,7 +27,7 @@ gcloud compute instances create $name \
         --image-family=ubuntu-1804-lts --image-project=ubuntu-os-cloud \
         --tags=geo-messenger-instance, \
         --metadata-from-file=startup-script=startup_script.sh, \
-        --metadata=PORT=$port,DB_URL=$url,DB_USER=$user,DB_PWD=$pwd,REGION=$region,GOOGLE_STORAGE_PROJECT_ID=$project_id
+        --metadata=PORT=$port,DB_URL=$url,DB_USER=$user,DB_PWD=$pwd,DB_MODE=$mode,REGION=$region,PROJECT_ID=$project_id,ENABLE_RUNTIME_CONFIGURATOR=$dynamic_configurator
 
 if [ $? -eq 0 ]; then
     echo "Instance $name has been created!"
