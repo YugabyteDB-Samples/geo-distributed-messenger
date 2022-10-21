@@ -186,12 +186,17 @@ Use the `gcloud/create_instance_template.sh` script to create instance templates
         -c "{DB_CONNECTION_ENDPOINT}" \
         -u {DB_USER} \
         -p {DB_PWD} \
-        -m {DB_MODE}
+        -m {DB_MODE} \
+        -f {DB_SCHEMA_FILE}
     ```
     where `DB_MODE` can be set to one of these values:
     * 'standard' - the data source is connected to a standard/regular node. 
     * 'replica' - the connection goes via a replica node.
     * 'geo' - the data source is connected to a geo-partitioned cluster.
+
+    and `DB_SCHEMA_FILE` can be set to:
+    * `classpath:messenger_schema.sql` - a basic database schema with NO tablespaces and partitions
+    * `classpath:messenger_schema_partitioned.sql` - a schema with tablespaces belonging to specific cloud regions and geo-partitions.
 
 
 1. Create a template for the US West, Central and East regions:
@@ -206,7 +211,8 @@ Use the `gcloud/create_instance_template.sh` script to create instance templates
         -c "jdbc:postgresql://ADDRESS:5433/yugabyte?ssl=true&sslmode=require" \
         -u {DB_USER} \
         -p {DB_PWD} \
-        -m standard
+        -m standard \
+        -f "classpath:messenger_schema.sql"
 
     ./create_instance_template.sh \
         -n template-us-central \
@@ -218,7 +224,8 @@ Use the `gcloud/create_instance_template.sh` script to create instance templates
         -c "jdbc:postgresql://ADDRESS:5433/yugabyte?ssl=true&sslmode=require" \
         -u {DB_USER} \
         -p {DB_PWD} \
-        -m standard
+        -m standard \
+        -f "classpath:messenger_schema.sql"
 
     ./create_instance_template.sh \
         -n template-us-east \
@@ -230,7 +237,8 @@ Use the `gcloud/create_instance_template.sh` script to create instance templates
         -c "jdbc:postgresql://ADDRESS:5433/yugabyte?ssl=true&sslmode=require" \
         -u {DB_USER} \
         -p {DB_PWD} \
-        -m standard
+        -m standard \
+        -f "classpath:messenger_schema.sql"
     ```
 2. Create a template for Europe:
     ```shell
@@ -244,7 +252,8 @@ Use the `gcloud/create_instance_template.sh` script to create instance templates
         -c "jdbc:postgresql://ADDRESS:5433/yugabyte?ssl=true&sslmode=require" \
         -u {DB_USER} \
         -p {DB_PWD} \
-        -m standard
+        -m standard \
+        -f "classpath:messenger_schema.sql"
     ```  
 3. Create a template for Asia:
     ```shell
@@ -258,7 +267,8 @@ Use the `gcloud/create_instance_template.sh` script to create instance templates
         -c "jdbc:postgresql://ADDRESS:5433/yugabyte?ssl=true&sslmode=require" \
         -u {DB_USER} \
         -p {DB_PWD} \
-        -m standard
+        -m standard \
+        -f "classpath:messenger_schema.sql"
     ```  
 ## Start Application Instances
 

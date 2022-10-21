@@ -46,7 +46,7 @@ public class WorkspaceView extends VerticalLayout {
         wComboBox.addClassName("app-workspace-view-combo-box");
 
         wComboBox.setItemLabelGenerator(workspace -> {
-            return workspace.getName();
+            return workspace.getName() + "(" + workspace.getCountryCode() + ")";
         });
 
         wComboBox.addValueChangeListener(event -> {

@@ -1,6 +1,6 @@
 #! /bin/bash
 
-while getopts n:i:r:s:d:a:c:u:p:m: flag
+while getopts n:i:r:s:d:a:c:u:p:m:f: flag
 do
     case "${flag}" in
         n) name=${OPTARG};;
@@ -13,6 +13,7 @@ do
         u) user=${OPTARG};;
         p) pwd=${OPTARG};;
         m) mode=${OPTARG};;
+        f) schema_file=${OPTARG};;
     esac
 done
 
@@ -31,7 +32,7 @@ gcloud compute instance-templates create $name \
    --image-project=ubuntu-os-cloud \
    --tags=allow-health-check,allow-ssh,allow-http-my-machines \
    --metadata-from-file=startup-script=startup_script.sh, \
-   --metadata=PORT=$port,DB_URL=$url,DB_USER=$user,DB_PWD=$pwd,DB_MODE=$mode,REGION=$region,PROJECT_ID=$project_id,ENABLE_RUNTIME_CONFIGURATOR=$dynamic_configurator
+   --metadata=PORT=$port,DB_URL=$url,DB_USER=$user,DB_PWD=$pwd,DB_MODE=$mode,DB_SCHEMA_FILE=$schema_file,REGION=$region,PROJECT_ID=$project_id,ENABLE_RUNTIME_CONFIGURATOR=$dynamic_configurator
 
 if [ $? -eq 0 ]; then
     echo "Instance template $name has been created!"
