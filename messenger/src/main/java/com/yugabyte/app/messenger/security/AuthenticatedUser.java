@@ -36,16 +36,20 @@ public class AuthenticatedUser {
         if (currentUser != null)
             return currentUser;
 
-        currentUser = getAuthentication()
+        Optional<Profile> profile = getAuthentication()
                 .map(authentication -> userRepository.findByEmail(authentication.getName()));
 
-        return currentUser;
+        if (profile.isPresent())
+            currentUser = profile;
+
+        return profile;
     }
 
     public void logout() {
         UI.getCurrent().getPage().setLocation(SecurityConfiguration.LOGOUT_URL);
         SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
         logoutHandler.logout(VaadinServletRequest.getCurrent().getHttpServletRequest(), null, null);
+        currentUser = null;
     }
 
 }
