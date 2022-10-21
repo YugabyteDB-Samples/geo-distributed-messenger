@@ -5,6 +5,7 @@ import com.vaadin.flow.server.VaadinServletRequest;
 import com.yugabyte.app.messenger.data.entity.Profile;
 import com.yugabyte.app.messenger.data.repository.ProfileRepository;
 
+import java.lang.StackWalker.Option;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 public class AuthenticatedUser {
 
     private final ProfileRepository userRepository;
+    private volatile Optional<Profile> currentUser;
 
     @Autowired
     public AuthenticatedUser(ProfileRepository userRepository) {
@@ -31,7 +33,13 @@ public class AuthenticatedUser {
     }
 
     public Optional<Profile> get() {
-        return getAuthentication().map(authentication -> userRepository.findByEmail(authentication.getName()));
+        if (currentUser != null)
+            return currentUser;
+
+        currentUser = getAuthentication()
+                .map(authentication -> userRepository.findByEmail(authentication.getName()));
+
+        return currentUser;
     }
 
     public void logout() {

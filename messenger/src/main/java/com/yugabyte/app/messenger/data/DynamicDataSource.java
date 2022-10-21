@@ -67,14 +67,6 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
                             "set yb_read_from_followers = true;");
         }
 
-        // if (isGeoPartitionedConnection()) {
-        // System.out.println("Allowing global transactions for the geo-partitioned
-        // connection");
-
-        // cfg.setConnectionInitSql(
-        // "SET force_global_transaction = TRUE;");
-        // }
-
         HikariDataSource ds = new HikariDataSource(cfg);
 
         dataSources.put(CURRENT_DATA_SOURCE_KEY, ds);
@@ -100,9 +92,5 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 
     public boolean isReplicaConnection() {
         return yugabyteConnType.equalsIgnoreCase(YugabyteConnectionType.REPLICA.name());
-    }
-
-    private boolean isGeoPartitionedConnection() {
-        return yugabyteConnType.equalsIgnoreCase(YugabyteConnectionType.GEO.name());
     }
 }
