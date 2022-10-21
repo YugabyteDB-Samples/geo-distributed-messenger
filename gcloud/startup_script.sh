@@ -90,6 +90,7 @@ export DB_URL=$(curl http://metadata.google.internal/computeMetadata/v1/instance
 export DB_USER=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/DB_USER -H "Metadata-Flavor: Google")
 export DB_PWD=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/DB_PWD -H "Metadata-Flavor: Google")
 export DB_MODE=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/DB_MODE -H "Metadata-Flavor: Google")
+export DB_SCHEMA_FILE=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/DB_SCHEMA_FILE -H "Metadata-Flavor: Google")
 
 # Configuring env variable for the Attachments microservice
 export KONG_ATTACHMENTS_API_ROUTE=http://localhost:8000/upload
