@@ -2,7 +2,7 @@
 
 Follow this instruction to deploy the core Messaging microservice in Heroku. 
 
-If you wish to send the pictures through the Messenger then the Attachements microservice and Kong Gateway need to be deployed as well. This instructions doesn't explain how to do the latter.
+If you wish to send the pictures through the Messenger then the Attachements microservice and Kong Gateway need to be deployed as well. At the moment, this instructions doesn't cover that scenario.
 
 ## Deploy to Heroku
 
@@ -32,6 +32,8 @@ If you wish to send the pictures through the Messenger then the Attachements mic
     heroku config:set DB_URL="<YOUR_DB_URL>" -a geo-distributed-messenger
     heroku config:set DB_USER=<YOUR_DB_USER> -a geo-distributed-messenger
     heroku config:set DB_PWD=<YOUR_DB_PWD> -a geo-distributed-messenger
+    heroku config:set DB_SCHEMA_FILE="classpath:messenger_schema.sql" -a geo-distributed-messenger
+    heroku config:set DB_MODE="standard" -a geo-distributed-messenger
     ```
 
     Note, the `DB_URL` should be in the following format

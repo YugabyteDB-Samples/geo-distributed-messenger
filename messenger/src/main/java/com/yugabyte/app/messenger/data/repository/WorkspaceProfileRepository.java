@@ -8,7 +8,7 @@ import com.yugabyte.app.messenger.data.entity.WorkspaceProfile;
 import com.yugabyte.app.messenger.data.entity.WorkspaceProfileKey;
 
 public interface WorkspaceProfileRepository extends JpaRepository<WorkspaceProfile, WorkspaceProfileKey> {
-    List<WorkspaceProfile> findByWorkspaceId(Integer workspaceId);
+    List<WorkspaceProfile> findByWorkspaceIdAndWorkspaceCountry(Integer workspaceId, String workspaceCountry);
 
     List<WorkspaceProfile> findByProfileId(Integer profileId);
 }

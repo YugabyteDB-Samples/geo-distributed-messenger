@@ -156,9 +156,11 @@ public class DataGenerator {
 
                         for (Workspace workspace : workspacesWithIds) {
                                 List<Channel> workspaceChannels = channelRepository
-                                                .findByWorkspaceId(workspace.getId());
+                                                .findByWorkspaceIdAndCountryCode(workspace.getId(),
+                                                                workspace.getCountryCode());
                                 List<WorkspaceProfile> workspaceWP = workspaceProfileRepository
-                                                .findByWorkspaceId(workspace.getId());
+                                                .findByWorkspaceIdAndWorkspaceCountry(workspace.getId(),
+                                                                workspace.getCountryCode());
 
                                 ExampleDataGenerator<Message> mGenerator = new ExampleDataGenerator<>(Message.class,
                                                 LocalDateTime.now());

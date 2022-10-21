@@ -206,7 +206,7 @@ Use the `gcloud/create_instance_template.sh` script to create instance templates
         -i geo-distributed-messenger \
         -r us-west2 \
         -s us-west-subnet \
-        -d true \
+        -d false \
         -a 80 \
         -c "jdbc:postgresql://ADDRESS:5433/yugabyte?ssl=true&sslmode=require" \
         -u {DB_USER} \
@@ -219,7 +219,7 @@ Use the `gcloud/create_instance_template.sh` script to create instance templates
         -i geo-distributed-messenger \
         -r us-central1 \
         -s us-central-subnet \
-        -d true \
+        -d false \
         -a 80 \
         -c "jdbc:postgresql://ADDRESS:5433/yugabyte?ssl=true&sslmode=require" \
         -u {DB_USER} \
@@ -232,7 +232,7 @@ Use the `gcloud/create_instance_template.sh` script to create instance templates
         -i geo-distributed-messenger \
         -r us-east4 \
         -s us-east-subnet \
-        -d true \
+        -d false \
         -a 80 \
         -c "jdbc:postgresql://ADDRESS:5433/yugabyte?ssl=true&sslmode=require" \
         -u {DB_USER} \
@@ -247,7 +247,7 @@ Use the `gcloud/create_instance_template.sh` script to create instance templates
         -i geo-distributed-messenger \
         -r europe-west3 \
         -s europe-west-subnet \
-        -d true \
+        -d false \
         -a 80 \
         -c "jdbc:postgresql://ADDRESS:5433/yugabyte?ssl=true&sslmode=require" \
         -u {DB_USER} \
@@ -262,7 +262,7 @@ Use the `gcloud/create_instance_template.sh` script to create instance templates
         -i geo-distributed-messenger \
         -r asia-east1 \
         -s asia-east-subnet \
-        -d true \
+        -d false \
         -a 80 \
         -c "jdbc:postgresql://ADDRESS:5433/yugabyte?ssl=true&sslmode=require" \
         -u {DB_USER} \
@@ -331,6 +331,14 @@ gcloud compute instance-groups unmanaged set-named-ports ig-us-central \
 gcloud compute instance-groups unmanaged set-named-ports ig-us-east \
     --named-ports http:80 \
     --zone us-east4-b
+
+gcloud compute instance-groups unmanaged set-named-ports ig-europe-west \
+    --named-ports http:80 \
+    --zone europe-west3-b
+
+gcloud compute instance-groups unmanaged set-named-ports ig-asia-east \
+    --named-ports http:80 \
+    --zone asia-east1-b
 ```
 
 ### Reserve external IP addresses
@@ -387,6 +395,22 @@ Reserve IP addresses that application users will use to reach the load balancer:
         --capacity-scaler=1 \
         --instance-group=ig-us-west \
         --instance-group-zone=us-west2-b \
+        --global
+    
+    gcloud compute backend-services add-backend load-balancer-backend-service \
+        --balancing-mode=UTILIZATION \
+        --max-utilization=0.8 \
+        --capacity-scaler=1 \
+        --instance-group=ig-europe-west \
+        --instance-group-zone=europe-west3-b \
+        --global
+    
+    gcloud compute backend-services add-backend load-balancer-backend-service \
+        --balancing-mode=UTILIZATION \
+        --max-utilization=0.8 \
+        --capacity-scaler=1 \
+        --instance-group=ig-asia-east \
+        --instance-group-zone=asia-east1-b \
         --global
     ```
 4. Create a default URL map to route all the incoming requests to the created backend service (in practice, you can define backend services and URL maps for different microservices):

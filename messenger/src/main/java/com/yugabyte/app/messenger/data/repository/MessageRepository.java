@@ -9,5 +9,5 @@ import com.yugabyte.app.messenger.data.entity.Message;
 
 public interface MessageRepository extends JpaRepository<Message, GeoId> {
 
-    public List<Message> findByChannelIdOrderByIdAsc(Integer channelId);
+    public List<Message> findByChannelIdAndCountryCodeOrderByIdAsc(Integer channelId, String countryCode);
 }

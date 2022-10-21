@@ -8,5 +8,5 @@ import com.yugabyte.app.messenger.data.entity.Channel;
 import com.yugabyte.app.messenger.data.entity.GeoId;
 
 public interface ChannelRepository extends JpaRepository<Channel, GeoId> {
-    List<Channel> findByWorkspaceId(Integer workspaceId);
+    List<Channel> findByWorkspaceIdAndCountryCode(Integer workspaceId, String countryCode);
 }

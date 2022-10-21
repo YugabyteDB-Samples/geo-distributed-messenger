@@ -41,7 +41,7 @@ public class MessagingService {
     private DynamicDataSource dataSource;
 
     public List<Channel> getWorkspaceChannels(Workspace workspace) {
-        return channelsRepository.findByWorkspaceId(workspace.getId());
+        return channelsRepository.findByWorkspaceIdAndCountryCode(workspace.getId(), workspace.getCountryCode());
     }
 
     public List<Workspace> getUserWorkspaces(Profile user) {
@@ -61,7 +61,7 @@ public class MessagingService {
     }
 
     public List<Message> getMessages(Channel channel) {
-        return messageRepository.findByChannelIdOrderByIdAsc(channel.getId());
+        return messageRepository.findByChannelIdAndCountryCodeOrderByIdAsc(channel.getId(), channel.getCountryCode());
     }
 
     @Transactional
