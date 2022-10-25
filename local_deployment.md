@@ -34,7 +34,7 @@ The instructions are prepared for Unix-based systems. Feel free to submit a pull
 
 ## Architecture
 
-TBD
+![architecture_local_deployment](https://user-images.githubusercontent.com/1537233/197897660-cc063e29-7f6e-4da2-8754-97548c879cc3.png)
 
 * Database - YugabyteDB or PostgreSQL
 * Object Storage - Minio
