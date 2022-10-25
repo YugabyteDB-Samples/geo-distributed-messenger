@@ -36,10 +36,13 @@ The instructions are prepared for Unix-based systems. Feel free to submit a pull
 
 ![architecture_local_deployment](https://user-images.githubusercontent.com/1537233/197897660-cc063e29-7f6e-4da2-8754-97548c879cc3.png)
 
-* Database - YugabyteDB or PostgreSQL
-* Object Storage - Minio
-* Microservices Gateway - Kong Gateway
-* Microservices - Messaging and Attachements.
+The application logic is shared between two microservices.
+
+The main primary Messaging microservice implements basic messaging capabilities letting exchange messages and content across messenger's channels. The microservices stores application data (workspaces, users, channels, messages, etc.) in YugabyteDB database.
+
+The second Attachments microservice is responsible for storing using pictures (attachements) in an object storage. MinIO is used as that storage for the local deployment.
+
+The Messaging microservice communicates to the Attachments one via the Kong Gateway. If the user wants to share a picture, the Messaging service triggers a special API endpoint on the Kong end and that endpoint routes the request to the Attachments instance.
 
 ## Create Custom Network
 
