@@ -1,7 +1,8 @@
 # Local Application Deployment
 
-Follow this instruction if you wish to run the entire application with all the components on your local machine. 
-The instruction is prepared for Unix-based systems. Feel free to submit a pull-request suggesting Windows-specific instructions.
+Follow this instruction if you wish to run the entire application with all the components on your local laptop or on-premise environment.
+
+The instructions are prepared for Unix-based systems. Feel free to submit a pull-request suggesting Windows-specific counterparts.
 
 <!-- vscode-markdown-toc -->
 
@@ -27,7 +28,9 @@ The instruction is prepared for Unix-based systems. Feel free to submit a pull-r
 
 ## Prerequisite
 
-TBD
+* Java 17+
+* Maven 3.8.4+
+* Docker 20.10.12+
 
 ## Architecture
 
@@ -40,8 +43,9 @@ TBD
 
 ## Create Custom Network
 
-YugabyteDB/PostgreSQL, Kong Gateway and Minio will be running in Docker containers. Create a custom network for them:
+YugabyteDB/PostgreSQL, Kong Gateway and Minio will be running in Docker containers. 
 
+Create a custom network for them:
 ```shell
 docker network create geo-messenger-net
 ```
