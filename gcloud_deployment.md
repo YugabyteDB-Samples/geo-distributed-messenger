@@ -1,12 +1,17 @@
 # Application Deployment in Google Cloud
 
-You can deploy multiple application instances across several geographies in Google Cloud with the `gcloud` tool. 
-Follow this guide to create a custom project, provision infrastructure and start an app on one or multiple VMs.
+The geo-messenger is designed to function across geogrpahies by definition. The following instruction shows how to deploy multiple application instances across several distant regions in Google Cloud. The regions are as follows - `us-west2`, `us-central1`, `us-east4`, `europe-west3` and `asia-east1`. You're free to follow the instruction precisely by deploy the application instances in all of those locations or skip as many location as you like.
 
-Refer to the following Google Cloud doc for more details:
-https://cloud.google.com/load-balancing/docs/https/setting-up-https
+[YugabyteDB Managed](http://cloud.yugabyte.com) or self-managed YugabyteDB should be deployed in the regions similar to those selected for the application deployment. 
 
-## Create Project
+## Prerequisite
+
+* [Google Cloud](http://console.cloud.google.com/) account
+* Multi-region [YugabyteDB Managed](http://cloud.yugabyte.com) cluster or a self-managed cluster
+
+## Architecture
+
+## Create Google Project
 
 1. Navigate to the `gcloud` directory within the project structure:
     ```shell
