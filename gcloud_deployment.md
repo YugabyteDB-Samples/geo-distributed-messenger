@@ -11,6 +11,10 @@ The geo-messenger is designed to function across geogrpahies by definition. The 
 
 ## Architecture
 
+![architecture-geo-distributed](https://user-images.githubusercontent.com/1537233/197902602-a8a627a3-5868-4cf8-bfd7-2ee086a79304.png)
+
+The application...
+
 ## Create Google Project
 
 1. Navigate to the `gcloud` directory within the project structure:
