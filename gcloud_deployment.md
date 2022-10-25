@@ -4,6 +4,27 @@ The geo-messenger is designed to function across geogrpahies by definition. The 
 
 [YugabyteDB Managed](http://cloud.yugabyte.com) or self-managed YugabyteDB should be deployed in the regions similar to those selected for the application deployment. 
 
+<!-- vscode-markdown-toc -->
+
+- [Application Deployment in Google Cloud](#application-deployment-in-google-cloud)
+  - [Prerequisite](#prerequisite)
+  - [Architecture](#architecture)
+  - [Create Google Project]()
+  - [Create Service Account]()
+  - [Create Custom Network]()
+  - [Create Runtime Configurator]()
+  - [Create Instance Templates]()
+  - [Start Application Instances]()
+  - [Configure Global External Load Balancer]()
+  - [Test Load Balancer]()
+  - [Test Application]()
+  
+<!-- vscode-markdown-toc-config
+    numbering=false
+    autoSave=true
+    /vscode-markdown-toc-config -->
+<!-- /vscode-markdown-toc -->
+
 ## Prerequisite
 
 * [Google Cloud](http://console.cloud.google.com/) account
@@ -13,7 +34,17 @@ The geo-messenger is designed to function across geogrpahies by definition. The 
 
 ![architecture-geo-distributed](https://user-images.githubusercontent.com/1537233/197902602-a8a627a3-5868-4cf8-bfd7-2ee086a79304.png)
 
-The application...
+The microservice instances and Kong Gateway nodes are deployed across multiple cloud regions. 
+
+The global cloud load balancer intercepts the user traffic at the PoP (point-of-presence) and forwards to the nearest application instance. 
+
+The Messaging microservice stores the application data in your YugabyteDB cluster (need to be provisioned by you separately). The Attachments microservice uploads picture to Google Cloud Storage.
+
+Refer to the following articles for a detailed architectural overview:
+1. [Automating Java Application Deployment Across Multiple Cloud Regions](https://dzone.com/articles/automating-java-application-deployment-across-mult)
+2. [Geo-distributed API Layer With Kong Gateway](https://dzone.com/articles/geo-distributed-api-layer-with-kong-gateway)
+3. [Using Global Cloud Load Balancer to Route User Requests to App Instances](https://dzone.com/articles/using-global-cloud-load-balancer-to-route-user-req)
+4. TBD - multi-region YugabyteDB deployment
 
 ## Create Google Project
 
@@ -466,3 +497,16 @@ After creating the global forwarding rule, it can take several minutes for your 
 
     Note, it can take several minutes before the load balancer's settings get propogated globally. Until this happens, the `curl` command might hit different HTTP errors.
 
+## Test Application
+
+Once the cloud load balancer is ready, use its IP address to access the application from the browser.
+
+Use the following credentials to sing in the messenger:
+```shell
+username: test@gmail.com
+pwd: password
+```
+
+Follow [this arcticle](https://dzone.com/articles/using-global-cloud-load-balancer-to-route-user-req) to see how to test the app with the usage of the load balancer.
+
+Enjoy and have fun!
