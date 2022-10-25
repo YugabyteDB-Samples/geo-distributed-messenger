@@ -1,17 +1,23 @@
-# Geo-Distributed Messenger With Vaadin, Kong and YugabyteDB
+# Geo-Distributed Messenger With YugabyteDB
 
-This project is a geo-distributed messenger that is inspired by Slack. The messenger is build on Vaadin, Spring Boot, Kong and YugabyteDB. PostgreSQL can be used as an alternate database for single-zone deployments. YugabyteDB is used as a distributed database that can span multiple zones and regions. 
+This a sample geo-distributed messenger that runs on YugabyteDB database, Kong Gateway, Spring Boot, Vaadin, MinIO and several cloud services.   
 
-## Dev Journal
+The messenger can be deployed as a single instance on your local laptop and function across the world in the public Google Cloud infrastructure.
 
-This is an ongoing project, so, expect the source code and description to change significantly over the time. The development journey is documented in the following articles:
+Use this project as a blueprint for designing and building geo-distributed apps with YugabyteDB from scratch.
+
+## Development Journal
+
+The project's development journey was thoroughly documented on DZone so that the reader can understand design choices and tradeoffs. Follow the journey from start to finish by surfing through the following articles:
 * [Geo What? A Quick Introduction to Geo-Distributed Apps](https://dzone.com/articles/geo-what-a-quick-introduction-to-geo-distributed-a)
 * [What Makes the Architecture of Geo-Distributed Apps Different?](https://dzone.com/articles/what-makes-the-architecture-of-geo-distributed-app)
 * [How to Build a Multi-Zone Java App in Days With Vaadin, YugabyteDB, and Heroku](https://dzone.com/articles/how-to-build-a-multi-zone-java-app-in-days-with-va)
 * [How To Connect a Heroku Java App to a Cloud-Native Database](https://dzone.com/articles/how-to-connect-a-heroku-app-to-a-yugabytedb-manage)
 * [Automating Java Application Deployment Across Multiple Cloud Regions](https://dzone.com/articles/automating-java-application-deployment-across-mult)
 * [Geo-distributed API Layer With Kong Gateway](https://dzone.com/articles/geo-distributed-api-layer-with-kong-gateway)
+* [Using Global Cloud Load Balancer to Route User Requests to App Instances](https://dzone.com/articles/using-global-cloud-load-balancer-to-route-user-req)
 
+And feel free to reach out to the [main developer and author of the project](https://twitter.com/denismagda) for feedback or questions.
 
 ## Deployment Options
 
