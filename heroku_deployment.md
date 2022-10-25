@@ -6,10 +6,12 @@ Note, if you'd like to deploy the complete solution with the Attachments microse
 
 <!-- vscode-markdown-toc -->
 
-- [Application Deployment in Heroku](#local-application-deployment)
+- [Application Deployment in Heroku](#application-deployment-in-heroku)
   - [Prerequisite](#prerequisite)
   - [Architecture](#architecture)
-  - [Prepare Heroku Environment](#create-custom-network)
+  - [Prepare Heroku Environment](#prepare-heroku-environment)
+  - [Whitelist Heroku IPs](#whitelist-heroku-ips)
+  - [Deploy Messenger to Heroku](#deploy-messenger-to-heroku)
 
 <!-- vscode-markdown-toc-config
     numbering=false
@@ -25,6 +27,8 @@ Note, if you'd like to deploy the complete solution with the Attachments microse
 * Maven 3.8.4+
 
 ## Architecture
+
+![architecture_heroku_deployment](https://user-images.githubusercontent.com/1537233/197900469-f5bae0b3-3ed7-4ae1-970f-4aa1b004052e.png)
 
 The main Messaging microservice implements basic messaging capabilities letting exchange messages and content across messenger's channels. The microservice is deployed in Heroku and stores application data (workspaces, users, channels, messages, etc.) in a YugabyteDB Managed instance.
 
