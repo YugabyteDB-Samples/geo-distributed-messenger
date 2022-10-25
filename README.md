@@ -2,7 +2,9 @@
 
 This a sample geo-distributed messenger that runs on YugabyteDB database, Kong Gateway, Spring Boot, Vaadin, MinIO and several cloud services.   
 
-The messenger can be deployed as a single instance on your local laptop and function across the world in the public Google Cloud infrastructure.
+![image9](https://user-images.githubusercontent.com/1537233/197895210-5052d681-cd8e-45b2-a621-429b05bce682.png)
+
+The messenger can be deployed as a single instance on your local laptop or function across the world in the public Google Cloud infrastructure.
 
 Use this project as a blueprint for designing and building geo-distributed apps with YugabyteDB from scratch.
 
