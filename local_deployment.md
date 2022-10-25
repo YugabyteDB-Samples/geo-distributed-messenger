@@ -2,8 +2,6 @@
 
 Follow this instruction if you wish to run the entire application with all the components on your local laptop or on-premise environment.
 
-The instructions are prepared for Unix-based systems. Feel free to submit a pull-request suggesting Windows-specific counterparts.
-
 <!-- vscode-markdown-toc -->
 
 - [Local Application Deployment](#local-application-deployment)
@@ -38,7 +36,7 @@ The instructions are prepared for Unix-based systems. Feel free to submit a pull
 
 The application logic is shared between two microservices.
 
-The main primary Messaging microservice implements basic messaging capabilities letting exchange messages and content across messenger's channels. The microservices stores application data (workspaces, users, channels, messages, etc.) in YugabyteDB database.
+The main Messaging microservice implements basic messaging capabilities letting exchange messages and content across messenger's channels. The microservices stores application data (workspaces, users, channels, messages, etc.) in YugabyteDB database.
 
 The second Attachments microservice is responsible for storing using pictures (attachements) in an object storage. MinIO is used as that storage for the local deployment.
 
@@ -243,7 +241,10 @@ Use Kong Admin API to configure the Kong Service and Route that will lead to the
     username: test@gmail.com
     pwd: password
     ```
-Enjoy!
+
+Enjoy and have fun! 
+
+Next, try out the [cloud-native geo-distributed deployment option](gcloud_deployment.md) of the messenger that spans accross countries and continents.
 
 ## Clean Resources
 
