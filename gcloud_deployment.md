@@ -18,7 +18,7 @@ The geo-messenger is designed to function across geogrpahies by definition. The 
   - [Configure Global External Load Balancer]()
   - [Test Load Balancer]()
   - [Test Application]()
-  
+
 <!-- vscode-markdown-toc-config
     numbering=false
     autoSave=true
@@ -215,29 +215,28 @@ As an example, this is how to update the database connectivity settings for all 
 ## Create Instance Templates
 
 Use the `gcloud/create_instance_template.sh` script to create instance templates for the US West, Central and East regions:
-    ```shell
-    ./create_instance_template.sh \
-        -n {INSTANCE_TEMPLATE_NAME} \
-        -i {PROJECT_ID} \
-        -r {CLOUD_REGION_NAME} \
-        -s {NETWORK_SUBNET_NAME} \
-        -d {ENABLE_DYNAMIC_RUNTIME_CONFIGURATOR}
-        -a {APP_PORT_NUMBER} \
-        -c "{DB_CONNECTION_ENDPOINT}" \
-        -u {DB_USER} \
-        -p {DB_PWD} \
-        -m {DB_MODE} \
-        -f {DB_SCHEMA_FILE}
-    ```
-    where `DB_MODE` can be set to one of these values:
-    * 'standard' - the data source is connected to a standard/regular node. 
-    * 'replica' - the connection goes via a replica node.
-    * 'geo' - the data source is connected to a geo-partitioned cluster.
+```shell
+./create_instance_template.sh \
+    -n {INSTANCE_TEMPLATE_NAME} \
+    -i {PROJECT_ID} \
+    -r {CLOUD_REGION_NAME} \
+    -s {NETWORK_SUBNET_NAME} \
+    -d {ENABLE_DYNAMIC_RUNTIME_CONFIGURATOR}
+    -a {APP_PORT_NUMBER} \
+    -c "{DB_CONNECTION_ENDPOINT}" \
+    -u {DB_USER} \
+    -p {DB_PWD} \
+    -m {DB_MODE} \
+    -f {DB_SCHEMA_FILE}
+```
+where `DB_MODE` can be set to one of these values:
+* 'standard' - the data source is connected to a standard/regular node. 
+* 'replica' - the connection goes via a replica node.
+* 'geo' - the data source is connected to a geo-partitioned cluster.
 
-    and `DB_SCHEMA_FILE` can be set to:
-    * `classpath:messenger_schema.sql` - a basic database schema with NO tablespaces and partitions
-    * `classpath:messenger_schema_partitioned.sql` - a schema with tablespaces belonging to specific cloud regions and geo-partitions.
-
+and `DB_SCHEMA_FILE` can be set to:
+* `classpath:messenger_schema.sql` - a basic database schema with NO tablespaces and partitions
+* `classpath:messenger_schema_partitioned.sql` - a schema with tablespaces belonging to specific cloud regions and geo-partitions.
 
 1. Create a template for the US West, Central and East regions:
     ```shell
