@@ -2,9 +2,9 @@
 
 This a sample geo-distributed messenger that runs on YugabyteDB database, Kong Gateway, Spring Boot, Vaadin, MinIO and several cloud services.   
 
-![image9](https://user-images.githubusercontent.com/1537233/197895210-5052d681-cd8e-45b2-a621-429b05bce682.png)
-
 The messenger can be deployed as a single instance on your local laptop or function across the world in the public Google Cloud infrastructure.
+
+![architecture-geo-distributed](https://user-images.githubusercontent.com/1537233/197904658-1ce99812-bcfd-4de9-b782-41bc677545ba.png)
 
 Use this project as a blueprint for designing and building geo-distributed apps with YugabyteDB from scratch.
 
@@ -23,10 +23,12 @@ And feel free to reach out to the [main developer and author of the project](htt
 
 ## Deployment Options
 
-The application can be started in several environments.
+![image9](https://user-images.githubusercontent.com/1537233/197895210-5052d681-cd8e-45b2-a621-429b05bce682.png)
+
+The application can be deployed in several environments.
 
 | Deployment Type    | Description   |         
 | ------------------ |:--------------|
-| [Your Laptop](local_deployment.md)        | Deploy the entire app with all the components (Kong, YugabyteDB, Minio) on your local machine.|
+| [Your Laptop or On-Prem Environment](local_deployment.md)        | Deploy the entire app with all the components (Kong, YugabyteDB, Minio) on your local machine.|
 | [Heroku](heroku_deployment.md)             | Deploy the application in Heroku.     |
-| [Google Cloud](gcloud_deployment.md)       | Deploy the application in the cloud native way across multiple geographic location using Google Cloud infrastructure and resources.     |
+| [Geo-Distributed version in Google Cloud](gcloud_deployment.md)       | Deploy the cloud-native geo-distributed version of the app accross distant geographies in Google Cloud.|
