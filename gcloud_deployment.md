@@ -13,6 +13,7 @@ The geo-messenger is designed to function across geogrpahies by definition. The 
   - [Create Service Account](#create-service-account)
   - [Create Custom Network](#create-custom-network)
   - [Create Runtime Configurator](#create-runtime-configurator)
+  - [Enable Google Cloud Storage](#enable-google-cloud-storage)
   - [Create Instance Templates](#create-instance-templates)
   - [Start Application Instances](#start-application-instances)
   - [Configure Global External Load Balancer](#configure-global-external-load-balancer)
@@ -211,6 +212,10 @@ gcloud beta runtime-config configs variables set us-west2/spring.datasource.url 
     {NEW_DATABASE_URL} --config-name messaging-microservice-settings --is-text
 ```
 Note, the `spring.datasource.url` parameter MUST be updated the last because the application logic watches for its changes.
+
+## Enable Google Cloud Storage
+
+The Attachments microservice uploads pictures to the [Google Cloud Storage](https://cloud.google.com/storage). Make sure the service is enabled at the project level.
 
 ## Create Instance Templates
 
