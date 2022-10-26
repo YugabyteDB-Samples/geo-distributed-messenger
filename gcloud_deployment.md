@@ -186,31 +186,31 @@ This step is optional if you don't plan to change database connectivity settings
 ### Specify Database Configuration Settings
 
 An instance of the Messaging microservice subscribes for updates on the following configuration variables:
-    ```shell
-    {REGION}/spring.datasource.url
-    {REGION}/spring.datasource.username
-    {REGION}/spring.datasource.password
-    {REGION}/yugabytedb.connection.type
-    ```
-    where:
-    * `{REGION}` is the region the VM was started in. You provide the region name via the `-r` parameter of the `./create_instance_template.sh` script.
-    * `yugabytedb.connection.type` - can be set to `standard`, `replica` or `geo`. Refer to the section below for details.
+```shell
+{REGION}/spring.datasource.url
+{REGION}/spring.datasource.username
+{REGION}/spring.datasource.password
+{REGION}/yugabytedb.connection.type
+```
+where:
+* `{REGION}` is the region the VM was started in. You provide the region name via the `-r` parameter of the `./create_instance_template.sh` script.
+* `yugabytedb.connection.type` - can be set to `standard`, `replica` or `geo`. Refer to the section below for details.
 
 Once an instance of the microservice is started, you can use the [Runtime Configurator APIs](https://cloud.google.com/deployment-manager/runtime-configurator/set-and-get-variables) to set and update those variable.
 
 As an example, this is how to update the database connectivity settings for all the VMs started in the `us-west2` region:
-    ```shell
-    gcloud beta runtime-config configs variables set us-west2/spring.datasource.username \
-      {NEW_DATABASE_USERNAME} --config-name messaging-microservice-settings --is-text
-    gcloud beta runtime-config configs variables set us-west2/spring.datasource.password \
-      {NEW_DATABASE_PASSWORD} --config-name messaging-microservice-settings --is-text
-    gcloud beta runtime-config configs variables set us-west2/yugabytedb.connection.type standard \
-     --config-name messaging-microservice-settings --is-text
+```shell
+gcloud beta runtime-config configs variables set us-west2/spring.datasource.username \
+    {NEW_DATABASE_USERNAME} --config-name messaging-microservice-settings --is-text
+gcloud beta runtime-config configs variables set us-west2/spring.datasource.password \
+    {NEW_DATABASE_PASSWORD} --config-name messaging-microservice-settings --is-text
+gcloud beta runtime-config configs variables set us-west2/yugabytedb.connection.type standard \
+    --config-name messaging-microservice-settings --is-text
 
-    gcloud beta runtime-config configs variables set us-west2/spring.datasource.url \
-      {NEW_DATABASE_URL} --config-name messaging-microservice-settings --is-text
-    ```
-    Note, the `spring.datasource.url` parameter MUST be updated the last because the application logic watches for its changes.
+gcloud beta runtime-config configs variables set us-west2/spring.datasource.url \
+    {NEW_DATABASE_URL} --config-name messaging-microservice-settings --is-text
+```
+Note, the `spring.datasource.url` parameter MUST be updated the last because the application logic watches for its changes.
 
 ## Create Instance Templates
 
