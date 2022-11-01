@@ -18,6 +18,7 @@ The project's development journey was thoroughly documented on DZone so that the
 * [Automating Java Application Deployment Across Multiple Cloud Regions](https://dzone.com/articles/automating-java-application-deployment-across-mult)
 * [Geo-distributed API Layer With Kong Gateway](https://dzone.com/articles/geo-distributed-api-layer-with-kong-gateway)
 * [Using Global Cloud Load Balancer to Route User Requests to App Instances](https://dzone.com/articles/using-global-cloud-load-balancer-to-route-user-req)
+* [Geo-Distributed Microservices and Their Database: Fighting the High Latency](https://dzone.com/articles/geo-distributed-microservices-and-their-database-f)
 
 And feel free to reach out to the [main developer and author of the project](https://twitter.com/denismagda) for feedback or questions.
 
