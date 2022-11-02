@@ -1,4 +1,4 @@
-# Geo-Distributed Messenger With YugabyteDB
+# Geo-Distributed Messenger With YugabyteDB and Kong Gateway
 
 This a sample geo-distributed messenger that runs on YugabyteDB database, Kong Gateway, Spring Boot, Vaadin, MinIO and several cloud services.   
 
