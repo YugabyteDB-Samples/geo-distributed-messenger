@@ -29,8 +29,8 @@ public class ProfileDetailsServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("No user present with username: " + username);
         } else {
-            return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getHashedPassword(),
-                    getAuthorities(user));
+            return new UserPrincipal(user.getEmail(), user.getHashedPassword(),
+                    getAuthorities(user), user);
         }
     }
 

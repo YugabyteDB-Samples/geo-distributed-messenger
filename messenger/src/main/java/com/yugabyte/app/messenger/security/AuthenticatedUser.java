@@ -5,7 +5,6 @@ import com.vaadin.flow.server.VaadinServletRequest;
 import com.yugabyte.app.messenger.data.entity.Profile;
 import com.yugabyte.app.messenger.data.repository.ProfileRepository;
 
-import java.lang.StackWalker.Option;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Component;
 public class AuthenticatedUser {
 
     private final ProfileRepository userRepository;
-    private volatile Optional<Profile> currentUser;
 
     @Autowired
     public AuthenticatedUser(ProfileRepository userRepository) {
@@ -28,19 +26,20 @@ public class AuthenticatedUser {
 
     private Optional<Authentication> getAuthentication() {
         SecurityContext context = SecurityContextHolder.getContext();
+
         return Optional.ofNullable(context.getAuthentication())
                 .filter(authentication -> !(authentication instanceof AnonymousAuthenticationToken));
     }
 
     public Optional<Profile> get() {
-        if (currentUser != null)
-            return currentUser;
+        Optional<Authentication> authentication = getAuthentication();
 
-        Optional<Profile> profile = getAuthentication()
-                .map(authentication -> userRepository.findByEmail(authentication.getName()));
+        if (authentication.isPresent()) {
+            UserPrincipal userToken = (UserPrincipal) authentication.get().getPrincipal();
+            return Optional.of(userToken.getProfileData());
+        }
 
-        if (profile.isPresent())
-            currentUser = profile;
+        Optional<Profile> profile = authentication.map(authToken -> userRepository.findByEmail(authToken.getName()));
 
         return profile;
     }
@@ -49,7 +48,5 @@ public class AuthenticatedUser {
         UI.getCurrent().getPage().setLocation(SecurityConfiguration.LOGOUT_URL);
         SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
         logoutHandler.logout(VaadinServletRequest.getCurrent().getHttpServletRequest(), null, null);
-        currentUser = null;
     }
-
 }
