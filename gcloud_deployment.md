@@ -45,7 +45,7 @@ Refer to the following articles for a detailed architectural overview:
 1. [Automating Java Application Deployment Across Multiple Cloud Regions](https://dzone.com/articles/automating-java-application-deployment-across-mult)
 2. [Geo-distributed API Layer With Kong Gateway](https://dzone.com/articles/geo-distributed-api-layer-with-kong-gateway)
 3. [Using Global Cloud Load Balancer to Route User Requests to App Instances](https://dzone.com/articles/using-global-cloud-load-balancer-to-route-user-req)
-4. TBD - multi-region YugabyteDB deployment
+4. [Geo-Distributed Microservices and Their Database: Fighting the High Latency](https://dzone.com/articles/geo-distributed-microservices-and-their-database-f)
 
 ## Create Google Project
 
