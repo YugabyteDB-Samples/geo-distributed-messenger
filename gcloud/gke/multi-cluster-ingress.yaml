@@ -1,0 +1,11 @@
+apiVersion: networking.gke.io/v1
+kind: MultiClusterIngress
+metadata:
+  name: geo-messenger-ingress
+  namespace: geo-messenger
+spec:
+  template:
+    spec:
+      backend:
+        serviceName: geo-messenger-mcs
+        servicePort: 80

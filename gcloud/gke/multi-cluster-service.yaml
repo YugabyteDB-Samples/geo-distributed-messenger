@@ -1,0 +1,17 @@
+apiVersion: networking.gke.io/v1
+kind: MultiClusterService
+metadata:
+  name: geo-messenger-mcs
+  namespace: geo-messenger
+  annotations:
+    cloud.google.com/backend-config: '{"ports": {"80":"geo-messenger-backend-healthcheck"}}'
+spec:
+  template:
+    spec:
+      selector:
+        app: messenger
+      ports:
+        - name: web
+          protocol: TCP
+          port: 80
+          targetPort: 80

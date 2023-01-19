@@ -35,3 +35,6 @@ messenger/src/main/resources/root.crt
 gcloud/*.pem
 gcloud/google-storage-account-key.json
 gcloud/instructions_private.md
+messenger/secret-gke.yaml
+messenger/deployment-gke.yaml
+attachments/deployment-gke.yaml

@@ -1,0 +1,14 @@
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: geo-messenger-backend-healthcheck
+  namespace: geo-messenger
+spec:
+  healthCheck:
+    checkIntervalSec: 7
+    timeoutSec: 4
+    healthyThreshold: 2
+    unhealthyThreshold: 2
+    type: HTTP
+    requestPath: /login
+    port: 80
