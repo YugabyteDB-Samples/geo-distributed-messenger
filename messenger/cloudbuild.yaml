@@ -1,0 +1,13 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "--tag",
+        "$_REGION-docker.pkg.dev/$PROJECT_ID/geo-distributed-messenger-repo/messenger-kong-gke",
+        "--build-arg",
+        "build_type=prod",
+        ".",
+      ]
+images:
+  - "$_REGION-docker.pkg.dev/$PROJECT_ID/geo-distributed-messenger-repo/messenger-kong-gke"

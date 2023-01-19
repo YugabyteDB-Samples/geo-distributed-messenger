@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: messenger-gke
+  namespace: geo-messenger
+  labels:
+    app: messenger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: messenger
+  template:
+    metadata:
+      labels:
+        app: messenger
+    spec:
+      serviceAccountName: _SERVICE_ACCOUNT
+      nodeSelector:
+        iam.gke.io/gke-metadata-server-enabled: "true"
+      containers:
+        - name: messenger-gke
+          image: _REGION-docker.pkg.dev/_PROJECT_ID/geo-distributed-messenger-repo/messenger-kong-gke:latest
+          # This service listens on port 80 for web traffic by default.
+          ports:
+            - containerPort: 80
+          env:
+            - name: PORT
+              value: "80"
+            - name: KONG_ATTACHMENTS_API_ROUTE
+              value: "http://kong-service:8000/upload"
+            - name: DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: database-endpoint
+                  key: url
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: database-endpoint
+                  key: user
+            - name: DB_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: database-endpoint
+                  key: password
+            - name: DB_MODE
+              value: "standard"
+            - name: DB_SCHEMA_FILE
+              value: "classpath:messenger_schema.sql"

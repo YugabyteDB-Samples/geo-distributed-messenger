@@ -101,6 +101,6 @@ export ATTACHMENTS_SERVICE_STORAGE_IMPL=google-storage
 export ENABLE_RUNTIME_CONFIGURATOR=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/ENABLE_RUNTIME_CONFIGURATOR -H "Metadata-Flavor: Google")
 
 nohup java -jar /opt/messenger/messenger/target/geo-distributed-messenger-1.0-SNAPSHOT.jar &
-nohup java -jar /opt/messenger/attachments/target/attachments-0.0.1-SNAPSHOT.jar &
+nohup java -jar /opt/messenger/attachments/target/attachments-1.0.0-SNAPSHOT.jar &
 
 

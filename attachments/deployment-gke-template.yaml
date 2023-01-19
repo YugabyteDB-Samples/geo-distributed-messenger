@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: attachments-gke
+  namespace: geo-messenger
+  labels:
+    app: attachments
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: attachments
+  template:
+    metadata:
+      labels:
+        app: attachments
+    spec:
+      serviceAccountName: _SERVICE_ACCOUNT
+      nodeSelector:
+        iam.gke.io/gke-metadata-server-enabled: "true"
+      containers:
+        - name: attachments-gke
+          image: _REGION-docker.pkg.dev/_PROJECT_ID/geo-distributed-messenger-repo/attachments-kong-gke:latest
+          # This service listens on port 80 for web traffic by default.
+          ports:
+            - containerPort: 80
+          env:
+            - name: ATTACHMENTS_SERVICE_PORT
+              value: "80"
+            - name: PROJECT_ID
+              value: "_PROJECT_ID"
+            - name: ATTACHMENTS_SERVICE_STORAGE_IMPL
+              value: "google-storage"
