@@ -32,4 +32,5 @@ The application can be deployed in several environments.
 | ------------------ |:--------------|
 | [Your Laptop or On-Prem Environment](local_deployment.md)        | Deploy the entire app with all the components (Kong, YugabyteDB, Minio) on your local machine.|
 | [Heroku](heroku_deployment.md)             | Deploy the application in Heroku.     |
-| [Geo-Distributed version in Google Cloud](gcloud_deployment.md)       | Deploy the cloud-native geo-distributed version of the app accross distant geographies in Google Cloud.|
+| [Geo-Distributed Deployment in Google Kubernetes Engine](gke_deployment.md)       | Deploy a geo-distributed version of the app across multiple Kubernetes clusters in Google Cloud.|
+| [Geo-Distributed Deployment on Google Cloud Virtual Machines](gcloud_deployment.md)       | Deploy a geo-distributed version of the app across multiple regions using VMs of Google Cloud.|

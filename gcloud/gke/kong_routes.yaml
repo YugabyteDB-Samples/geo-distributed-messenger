@@ -1,0 +1,15 @@
+_format_version: "3.0"
+_transform: true
+
+services:
+  - name: attachments-service
+    url: http://attachments-service.geo-messenger.svc.cluster.local:80
+    routes:
+      - name: upload-route
+        paths:
+          - /upload
+        strip_path: false
+      - name: ping-route
+        paths:
+          - /ping
+        strip_path: false

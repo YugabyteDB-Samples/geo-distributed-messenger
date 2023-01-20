@@ -15,9 +15,11 @@ project_id=$(gcloud config get-value project)
 
 echo "Google Cloud project id: $project_id"
 
-# Starting the Attachments microservice in GKE
 
+# Starting the Attachments microservice in GKE
 echo "Starting Attachments in $region for cluster $cluster_name..."
+
+kubectl config use-context $cluster_name
 
 cd ../../attachments
 cat deployment-gke-template.yaml | sed "s/_REGION/$region/g" | sed "s/_PROJECT_ID/$project_id/g" | sed "s/_SERVICE_ACCOUNT/$k8_service_account/g" > deployment-gke.yaml

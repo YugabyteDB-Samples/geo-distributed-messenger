@@ -14,6 +14,7 @@ The instruction explains how to deploy the applicaion in Google Kubernetes Engin
   - [Enable Anthos Pricing](#enable-anthos-pricing)
   - [Create Service Account](#create-service-account)
   - [Start GKE Cluster](#start-gke-clusters)
+  - [Deploy Kong Gateway](#deploy-kong-gateway)
   - [Start Application](#start-application)
   - [Deploy Multi Cluster Ingress](#deploy-multi-cluster-ingress)
   - [Playing with the App](#playing-with-the-app)
@@ -187,6 +188,45 @@ Start two GKE clusters in distant cluster locations and register them with the f
 
 Now, you can open the [Anthos](https://cloud.google.com/anthos) dashboard to observe the clusters and Ingress.
 
+## Deploy Kong Gateway
+
+1. Make sure you're in the `gcloud/gke` directory of the project:
+    ```shell
+    cd PROJECT_ROO_DIR/gcloud/gke
+    ```
+
+2. Deploy and configure Kong Gateway in the `gke-us-east4` cluster:
+    ```shell
+    ./start_gke_kong.sh -n gke-us-east4
+
+    <!-- Pull and wait while the `EXTERNAL_IP` of the `kong-proxy` service gets created -->
+    kubectl get services kong-proxy -n kong
+
+    <!-- Configure the application routes with the `EXTERNAL_IP` -->
+    ./configure_kong_routes.sh \
+        -n gke-us-east4 \
+        -s EXTERNAL_IP
+
+    <!-- Make sure the routes are created -->
+    curl -i -X GET --url http://${kong_proxy_ip}:8001/services/attachments-service/routes
+    ``` 
+
+3. Repeat for the the `gke-europe-west1` cluster:
+    ```shell
+    ./start_gke_kong.sh -n gke-europe-west1
+
+    <!-- Pull and wait while the `EXTERNAL_IP` of the `kong-proxy` service gets created -->
+    kubectl get services kong-proxy -n kong
+
+    <!-- Configure the application routes with the `EXTERNAL_IP` -->
+    ./configure_kong_routes.sh \
+        -n gke-europe-west1 \
+        -s EXTERNAL_IP
+
+    <!-- Make sure the routes are created -->
+    curl -i -X GET --url http://${kong_proxy_ip}:8001/services/attachments-service/routes
+    ```
+
 ## Start Application
 
 Start an instance of Spring Cloud Config Server, Attachments and Messenger in every GKE cluster.
@@ -235,7 +275,6 @@ It will take several minutes to deploy the application. You can monitor the depl
     kubectl get deployments
 
     # Or, view logs of a particular microservice:
-    kubectl logs -f deployment/config-server-gke
     kubectl logs -f deployment/attachments-gke
     kubectl logs -f deployment/messenger-gke
     ```

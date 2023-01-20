@@ -18,6 +18,9 @@ kubectl delete services messenger-service --namespace geo-messenger
 kubectl delete deployments attachments-gke --namespace geo-messenger
 kubectl delete deployments messenger-gke --namespace geo-messenger
 
+kubectl delete -f kong_gateway.yaml
+kubectl delete namespace kong
+
 gcloud container fleet memberships unregister $cluster_name --gke-cluster $region/$cluster_name
 gcloud container clusters delete $cluster_name --region $region
 kubectl config delete-context $cluster_name

@@ -28,7 +28,7 @@ spec:
             - name: PORT
               value: "80"
             - name: KONG_ATTACHMENTS_API_ROUTE
-              value: "http://kong-service:8000/upload"
+              value: "http://kong-proxy.kong.svc.cluster.local:80/upload"
             - name: DB_URL
               valueFrom:
                 secretKeyRef:
