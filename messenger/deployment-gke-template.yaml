@@ -45,6 +45,12 @@ spec:
                   name: database-endpoint
                   key: password
             - name: DB_MODE
-              value: "standard"
+              valueFrom:
+                secretKeyRef:
+                  name: database-endpoint
+                  key: type
             - name: DB_SCHEMA_FILE
-              value: "classpath:messenger_schema.sql"
+              valueFrom:
+                secretKeyRef:
+                  name: database-endpoint
+                  key: schema
