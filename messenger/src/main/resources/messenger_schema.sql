@@ -2,11 +2,10 @@ CREATE SCHEMA Messenger;
 
 SET search_path TO Messenger;
 
-CREATE SEQUENCE profile_id_seq
-    CACHE 100;
+CREATE SEQUENCE profile_id_seq CACHE 100 INCREMENT BY 5;
 
 CREATE TABLE Profile (
-    id integer DEFAULT nextval('profile_id_seq'),
+    id integer NOT NULL DEFAULT nextval('profile_id_seq'),
     full_name text NOT NULL,
     email text NOT NULL,
     phone text NOT NULL,
@@ -17,11 +16,10 @@ CREATE TABLE Profile (
     UNIQUE (id)
 );
 
-CREATE SEQUENCE workspace_id_seq
-    CACHE 100;
+CREATE SEQUENCE workspace_id_seq CACHE 100 INCREMENT BY 5;
 
 CREATE TABLE Workspace (
-    id integer DEFAULT nextval('workspace_id_seq'),
+    id integer NOT NULL DEFAULT nextval('workspace_id_seq'),
     name text NOT NULL,
     country_code varchar(3),
     PRIMARY KEY (id, country_code)
@@ -37,11 +35,10 @@ CREATE TABLE Workspace_Profile (
     FOREIGN KEY (profile_id) REFERENCES Profile (id)
 );
 
-CREATE SEQUENCE channel_id_seq
-    CACHE 100;
+CREATE SEQUENCE channel_id_seq CACHE 100 INCREMENT BY 5;
 
 CREATE TABLE Channel (
-    id integer DEFAULT nextval('channel_id_seq'),
+    id integer NOT NULL DEFAULT nextval('channel_id_seq'),
     name text NOT NULL,
     workspace_id integer NOT NULL,
     country_code text NOT NULL,
@@ -49,8 +46,7 @@ CREATE TABLE Channel (
     FOREIGN KEY (workspace_id, country_code) REFERENCES Workspace (id, country_code)
 );
 
-CREATE SEQUENCE message_id_seq
-    CACHE 100;
+CREATE SEQUENCE message_id_seq CACHE 100 INCREMENT BY 10;
 
 CREATE TABLE Message (
     id integer NOT NULL DEFAULT nextval('message_id_seq'),

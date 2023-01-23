@@ -5,16 +5,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
-import javax.persistence.SequenceGenerator;
-
 import com.helger.commons.annotation.Nonempty;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 @Entity
 @IdClass(GeoId.class)
 public class Workspace {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "workspace_id_seq")
-    @SequenceGenerator(name = "workspace_id_seq", sequenceName = "workspace_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "workspace_id_generator_pooled_lo")
+    @GenericGenerator(name = "workspace_id_generator_pooled_lo", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
+            @Parameter(name = "sequence_name", value = "workspace_id_seq"),
+            @Parameter(name = "initial_value", value = "1"),
+            @Parameter(name = "increment_size", value = "5"),
+            @Parameter(name = "optimizer", value = "pooled-lo") })
     private Integer id;
 
     @Id

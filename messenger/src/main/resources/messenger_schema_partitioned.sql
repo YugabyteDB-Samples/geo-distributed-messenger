@@ -4,7 +4,7 @@ SET search_path to Messenger;
 
 CREATE TABLESPACE us_central1_ts WITH (
   replica_placement='{"num_replicas": 1, "placement_blocks":
-  [{"cloud":"gcp","region":"us-central1","zone":"us-central1-b","min_num_replicas":1}]}'
+  [{"cloud":"gcp","region":"us-east1","zone":"us-east1-b","min_num_replicas":1}]}'
 );
 
 CREATE TABLESPACE europe_west3_ts WITH (
@@ -17,10 +17,10 @@ CREATE TABLESPACE asia_east1_ts WITH (
   [{"cloud":"gcp","region":"asia-east1","zone":"asia-east1-b","min_num_replicas":1}]}'
 );
 
-CREATE SEQUENCE profile_id_seq CACHE 100;
+CREATE SEQUENCE profile_id_seq CACHE 100 INCREMENT BY 5;
 
 CREATE TABLE Profile (
-    id integer DEFAULT nextval('profile_id_seq'),
+    id integer NOT NULL DEFAULT nextval('profile_id_seq'),
     full_name text NOT NULL,
     email text NOT NULL,
     phone text NOT NULL,
@@ -49,10 +49,10 @@ CREATE TABLE Profile_APAC
 
 
 
-CREATE SEQUENCE workspace_id_seq CACHE 100;
+CREATE SEQUENCE workspace_id_seq CACHE 100 INCREMENT BY 5;
 
 CREATE TABLE Workspace(
-    id integer DEFAULT nextval('workspace_id_seq'),
+    id integer NOT NULL DEFAULT nextval('workspace_id_seq'),
     name text NOT NULL,
     country_code varchar(3)
 ) PARTITION BY LIST (country_code);
@@ -104,10 +104,10 @@ CREATE TABLE Workspace_Profile_APAC
 
 
 
-CREATE SEQUENCE channel_id_seq CACHE 100;
+CREATE SEQUENCE channel_id_seq CACHE 100 INCREMENT BY 5;
 
 CREATE TABLE Channel(
-    id integer DEFAULT nextval('channel_id_seq'),
+    id integer NOT NULL DEFAULT nextval('channel_id_seq'),
     name text NOT NULL,
     workspace_id integer NOT NULL,
     country_code text NOT NULL
@@ -133,7 +133,7 @@ CREATE TABLE Channel_APAC
 
 
 
-CREATE SEQUENCE message_id_seq CACHE 100;
+CREATE SEQUENCE message_id_seq CACHE 100 INCREMENT BY 10;
 
 CREATE TABLE Message(
     id integer NOT NULL DEFAULT nextval('message_id_seq'),

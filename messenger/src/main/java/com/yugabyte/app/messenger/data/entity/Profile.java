@@ -5,18 +5,24 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
-import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+
 @Entity
 @IdClass(GeoId.class)
 public class Profile {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "profile_id_seq")
-    @SequenceGenerator(name = "profile_id_seq", sequenceName = "profile_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "profile_id_generator_pooled_lo")
+    @GenericGenerator(name = "profile_id_generator_pooled_lo", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
+            @Parameter(name = "sequence_name", value = "profile_id_seq"),
+            @Parameter(name = "initial_value", value = "1"),
+            @Parameter(name = "increment_size", value = "5"),
+            @Parameter(name = "optimizer", value = "pooled-lo") })
     private Integer id;
 
     @Id

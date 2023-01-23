@@ -7,17 +7,24 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
-import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotEmpty;
 
 import org.hibernate.annotations.CreationTimestamp;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 @Entity
 @IdClass(GeoId.class)
 public class Message {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "message_id_seq")
-    @SequenceGenerator(name = "message_id_seq", sequenceName = "message_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "message_id_pooled_lo_generator")
+    @GenericGenerator(name = "message_id_pooled_lo_generator", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
+            @Parameter(name = "sequence_name", value = "message_id_seq"),
+            @Parameter(name = "initial_value", value = "1"),
+            @Parameter(name = "increment_size", value = "10"),
+            @Parameter(name = "optimizer", value = "pooled-lo")
+    })
     private Integer id;
 
     @Id
