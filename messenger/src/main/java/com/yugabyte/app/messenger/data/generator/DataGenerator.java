@@ -17,6 +17,7 @@ import com.yugabyte.app.messenger.data.repository.WorkspaceRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
@@ -60,10 +61,13 @@ public class DataGenerator {
                                         LocalDateTime.now());
                         wGenerator.setData(Workspace::setName, DataType.COMPANY_NAME);
 
+                        AtomicInteger counter = new AtomicInteger();
+
                         List<Workspace> workspacesInit = wGenerator.create(10, seed).stream().map(
                                         workspace -> {
+                                                int idx = counter.incrementAndGet() % countryCodes.size();
                                                 workspace.setCountryCode(
-                                                                countryCodes.get(rand.nextInt(countryCodes.size())));
+                                                                countryCodes.get(idx));
                                                 return workspace;
                                         }).collect(Collectors.toList());
                         workspaceRepository.saveAll(workspacesInit);

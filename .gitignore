@@ -39,3 +39,6 @@ messenger/secret-gke.yaml
 messenger/deployment-gke.yaml
 attachments/deployment-gke.yaml
 commands.txt
+messenger/secret-gke-us-only.yaml
+messenger/secret-gke-europe-geo.yaml
+messenger/secret-gke-us-geo.yaml
