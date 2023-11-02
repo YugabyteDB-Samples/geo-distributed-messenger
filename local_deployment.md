@@ -9,8 +9,6 @@ Follow this instruction if you wish to run the entire application with all the c
   - [Architecture](#architecture)
   - [Create Custom Network](#create-custom-network)
   - [Start Database](#start-database)
-    - [YugabyteDB](#yugabyteDB)
-    - [PostgreSQL](#postgresql)
   - [Start Minio](#start-minio)
   - [Configure Kong Gateway](#configure-kong-gateway)
   - [Start Attachments Microservice](#start-attachments-microservice)
@@ -36,7 +34,7 @@ Follow this instruction if you wish to run the entire application with all the c
 
 The application logic is shared between two microservices.
 
-The main Messaging microservice implements basic messaging capabilities letting exchange messages and content across messenger's channels. The microservices stores application data (workspaces, users, channels, messages, etc.) in YugabyteDB database.
+The main Messaging microservice implements basic messaging capabilities letting exchange messages and content across messenger's channels. The microservices stores application data (workspaces, users, channels, messages, etc.) in YugabyteDB database. Plus, Kong uses YugabyteDB as a store for its metadata and routes configs.
 
 The second Attachments microservice is responsible for storing using pictures (attachements) in an object storage. MinIO is used as that storage for the local deployment.
 
@@ -44,7 +42,7 @@ The Messaging microservice communicates to the Attachments one via the Kong Gate
 
 ## Create Custom Network
 
-YugabyteDB/PostgreSQL, Kong Gateway and Minio will be running in Docker containers. 
+YugabyteDB, Kong Gateway and Minio will be running in Docker containers. 
 
 Create a custom network for them:
 ```shell
@@ -53,50 +51,33 @@ docker network create geo-messenger-net
 
 ## Start Database
 
-You have two choices here. You can use YugabyteDB or PostgreSQL. The application works with both databases with no code changes. If you select YugabyteDB, then you still need to deploy PostgreSQL that is used by Kong Gateway.
-
-### YugabyteDB
+You have two choices here. You can use YugabyteDB or PostgreSQL. The application works with both databases with no code changes. The following guide uses YugabyteDB for both the application and Kong-specific data:
 
 Start a multi-node YugabyteDB cluster.
 
 1. Start the cluster:
     ```shell
-    mkdir ~/yb_docker_data
+    mkdir $HOME/yb_docker_data
 
     docker run -d --name yugabytedb_node1 --net geo-messenger-net \
-    -p 7001:7000 -p 9000:9000 -p 5433:5433 \
-    -v ~/yb_docker_data/node1:/home/yugabyte/yb_data --restart unless-stopped \
-    yugabytedb/yugabyte:latest \
-    bin/yugabyted start --listen=yugabytedb_node1 \
-    --base_dir=/home/yugabyte/yb_data --daemon=false
-    
+      -p 15433:15433 -p 7001:7000 -p 9001:9000 -p 5433:5433 \
+      -v $HOME/yb_docker_data/node1:/home/yugabyte/yb_data --restart unless-stopped \
+      yugabytedb/yugabyte:latest \
+      bin/yugabyted start --base_dir=/home/yugabyte/yb_data --daemon=false
+      
     docker run -d --name yugabytedb_node2 --net geo-messenger-net \
-    -v ~/yb_docker_data/node2:/home/yugabyte/yb_data --restart unless-stopped \
-    yugabytedb/yugabyte:latest \
-    bin/yugabyted start --join=yugabytedb_node1 --listen=yugabytedb_node2 \
-    --base_dir=/home/yugabyte/yb_data --daemon=false
-        
+      -p 15434:15433 -p 7002:7000 -p 9002:9000 -p 5434:5433 \
+      -v $HOME/yb_docker_data/node2:/home/yugabyte/yb_data --restart unless-stopped \
+      yugabytedb/yugabyte:latest \
+      bin/yugabyted start --join=yugabytedb_node1 --base_dir=/home/yugabyte/yb_data --daemon=false
+          
     docker run -d --name yugabytedb_node3 --net geo-messenger-net \
-    -v ~/yb_docker_data/node3:/home/yugabyte/yb_data --restart unless-stopped \
-    yugabytedb/yugabyte:latest \
-    bin/yugabyted start --join=yugabytedb_node1 --listen=yugabytedb_node3 \
-    --base_dir=/home/yugabyte/yb_data --daemon=false
+      -p 15435:15433 -p 7003:7000 -p 9003:9000 -p 5435:5433 \
+      -v $HOME/yb_docker_data/node3:/home/yugabyte/yb_data --restart unless-stopped \
+      yugabytedb/yugabyte:latest \
+      bin/yugabyted start --join=yugabytedb_node1 --base_dir=/home/yugabyte/yb_data --daemon=false
     ```
-2. Confirm the cluster is ready: http://127.0.0.1:7001
-
-### PostgreSQL
-
-You need to deploy PostgreSQL for Kong Gateway. The application can use any of the databases.
-
-Start PostgreSQL in Docker:
-    ```shell
-    mkdir ~/postgresql_data/
-
-    docker run --name postgresql --net geo-messenger-net \
-        -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=password \
-        -p 5432:5432 \
-        -v ~/postgresql_data/:/var/lib/postgresql/data -d postgres:13.8
-    ```
+2. Confirm the cluster is ready: http://127.0.0.1:15433
 
 ## Start Minio
 
@@ -104,17 +85,17 @@ Start PostgreSQL in Docker:
 
 1. Start the Minio service in:
     ```shell
-    mkdir -p ~/minio/data
+    mkdir -p $HOME/minio/data
 
     docker run -d \
     --net geo-messenger-net \
     -p 9100:9000 \
     -p 9101:9001 \
     --name minio1 \
-    -v ~/minio/data:/data \
+    -v $HOME/minio/data:/data \
     -e "MINIO_ROOT_USER=minio_user" \
     -e "MINIO_ROOT_PASSWORD=password" \
-    quay.io/minio/minio:RELEASE.2022-08-26T19-53-15Z server /data --console-address ":9001"
+    quay.io/minio/minio:latest server /data --console-address ":9001"
     ```
 
 2. Open the Minio console and log in using the `minio_user` as the user and `password` as the password:
@@ -124,9 +105,9 @@ Start PostgreSQL in Docker:
 
 Kong Gateway is used between application microservices for communication purposes. If you'd like to learn more about Kong Gateway deployment in Docker then check this page: https://docs.konghq.com/gateway/latest/install-and-run/docker/
 
-1. Connect to Postgres and create the `kong` database:
+1. Connect to YugabyteDB and create the `kong` database:
     ```shell
-    psql -h 127.0.0.1 --username=postgres
+    psql -h 127.0.0.1 -p 5433 -U yugabyte
 
     create database kong;
 
@@ -137,35 +118,62 @@ Kong Gateway is used between application microservices for communication purpose
     ```shell
     docker run --rm --net geo-messenger-net \
     -e "KONG_DATABASE=postgres" \
-    -e "KONG_PG_HOST=postgresql" \
-    -e "KONG_PG_USER=postgres" \
-    -e "KONG_PG_PASSWORD=password" \
-    kong:2.8.1-alpine kong migrations bootstrap
-    ```
-3. Start a container with Kong Gateway:
-    ```shell
-    docker run -d --name kong-gateway \
-    --net geo-messenger-net \
-    -e "KONG_DATABASE=postgres" \
-    -e "KONG_PG_HOST=postgresql" \
-    -e "KONG_PG_USER=postgres" \
-    -e "KONG_PG_PASSWORD=password" \
-    -e "KONG_PROXY_ACCESS_LOG=/dev/stdout" \
-    -e "KONG_ADMIN_ACCESS_LOG=/dev/stdout" \
-    -e "KONG_PROXY_ERROR_LOG=/dev/stderr" \
-    -e "KONG_ADMIN_ERROR_LOG=/dev/stderr" \
-    -e "KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl" \
-    -p 8000:8000 \
-    -p 8443:8443 \
-    -p 127.0.0.1:8001:8001 \
-    -p 127.0.0.1:8444:8444 \
-    kong:2.8.1-alpine
+    -e "KONG_PG_HOST=yugabytedb_node1" \
+    -e "KONG_PG_PORT=5433" \
+    -e "KONG_PG_USER=yugabyte" \
+    -e "KONG_PG_PASSWORD=yugabyte" \
+    kong:latest kong migrations bootstrap
     ```
 
-4. Verify the installation:
-    ```shell
-    curl -i -X GET --url http://localhost:8001/services
-    ```
+It can take up to 5 minutes to complete the bootstrapping process. The container might not display any logs, until the process is finished. Once the boostrapping is completed, you'll see the following log messages:
+
+```shell
+....
+
+migrating response-ratelimiting on database 'kong'...
+response-ratelimiting migrated up to: 000_base_response_rate_limiting (executed)
+migrating session on database 'kong'...
+session migrated up to: 000_base_session (executed)
+session migrated up to: 001_add_ttl_index (executed)
+session migrated up to: 002_320_to_330 (executed)
+58 migrations processed
+58 executed
+Database is up-to-date
+``` 
+
+
+Next, start a Kong Gateway container connecting it to YugabyteDB:
+  ```shell
+  docker run -d --name kong-gateway \
+  --net geo-messenger-net \
+  -e "KONG_DATABASE=postgres" \
+  -e "KONG_PG_HOST=yugabytedb_node1" \
+  -e "KONG_PG_PORT=5433" \
+  -e "KONG_PG_USER=yugabyte" \
+  -e "KONG_PG_PASSWORD=yugabyte" \
+  -e "KONG_PROXY_ACCESS_LOG=/dev/stdout" \
+  -e "KONG_ADMIN_ACCESS_LOG=/dev/stdout" \
+  -e "KONG_PROXY_ERROR_LOG=/dev/stderr" \
+  -e "KONG_ADMIN_ERROR_LOG=/dev/stderr" \
+  -e "KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl" \
+  -p 8000:8000 \
+  -p 8443:8443 \
+  -p 127.0.0.1:8001:8001 \
+  -p 127.0.0.1:8444:8444 \
+  kong:latest
+  ```
+
+Make sure the container is up and running:
+```shell
+curl -i -X GET --url http://localhost:8001/services
+```
+
+Finally, open YugabyteDB UI and select "kong" from the "Databases" section:
+http://127.0.0.1:15433
+
+You'll see a picture similar to the one below displaying tables and indexes used by Kong internally:
+![kong-ui](https://github.com/YugabyteDB-Samples/geo-distributed-messenger/assets/1537233/00108b76-66a9-4457-9442-f7ecc71acb3c)
+
 
 ## Start Attachments Microservice
 
