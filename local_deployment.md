@@ -30,7 +30,7 @@ Follow this instruction if you wish to run the entire application with all the c
 
 ## Architecture
 
-![kong-ui](https://github.com/YugabyteDB-Samples/geo-distributed-messenger/assets/1537233/9a2f34db-9ad9-48b2-9780-c02602807011)
+![architecture_local_deployment](https://github.com/YugabyteDB-Samples/geo-distributed-messenger/assets/1537233/92aa8382-c140-484b-aa61-42aa94955854)
 
 The application logic is shared between two microservices.
 
